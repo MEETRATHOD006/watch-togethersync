@@ -13,35 +13,31 @@ let serverTimeOffset = 0;
 let debounceTimeout;
 
 function syncTime() {
-  const clientSendTime = Date.now();
+  const date = new Date(); // Store the Date object in a variable
+  const clientSendTime = date.getSeconds(); // Only use getSeconds(), not getTime()
   socket.emit("ping", clientSendTime);
 }
 
 socket.on("pong", (clientSendTime, serverReceiveTime) => {
-  const clientReceiveTime = Date.now();
+  const date = new Date(); // Store the Date object in a variable
+  const clientReceiveTime = date.getSeconds(); // Only use getSeconds(), not getTime()
   const roundTripTime = clientReceiveTime - clientSendTime;
   const serverResponseTime = serverReceiveTime + roundTripTime / 2;
 
   serverTimeOffset = serverResponseTime - clientReceiveTime; // Calculate offset
-  console.log(`Time offset with server: ${serverTimeOffset} ms`);
+  console.log(`Time offset with server: ${serverTimeOffset} seconds`);
 });
+
 
 // Periodically sync time every 30 seconds
 setInterval(syncTime, 30000);
 syncTime();
 
-// Function to convert milliseconds to h:m:s format
-function msToHMS(ms) {
-  const seconds = Math.floor(ms / 1000);
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = seconds % 60;
-
-  return `${hours}:${minutes}:${remainingSeconds}`;
-}
+// Function to convert milliseconds to h:m:s forma
 
 function emitWithSync(eventName, data = {}) {
-  const syncedTime = Date.now() + serverTimeOffset;
+  const date = new Date(); // Store the Date object in a variable
+  const syncedTime = date.getSeconds() + serverTimeOffset; // Only use getSeconds(), not getTime()
   socket.emit(eventName, { ...data, clientTime: syncedTime });
 }
 
@@ -182,38 +178,59 @@ if (roomId) {
     }
   });
 
-  // Listen for video-sync event to sync the video across users
+ // Listen for video-sync event to sync the video across users
   socket.on('video-sync', (videoId, serverTime, isPlaying) => {
     if (currentVideoId === videoId) return;  // Don't reload if the video is already the same
+    
+    const date = new Date(); // Store the Date object
+    const clientReceiveTime = date.getSeconds(); // Use getSeconds() for client time
     const latencyAdjustedTime = serverTime - serverTimeOffset;
-    const currentTime = (Date.now() - latencyAdjustedTime) / 1000;
+    
+    const roundTripTime = clientReceiveTime - serverTime;  // Round-trip time calculation
+    const currentTime = latencyAdjustedTime + roundTripTime / 2; // Adjust for round-trip time
     
     console.log(`Syncing video for all users: ${videoId}`);
     loadVideo(videoId);
   });
   
+  // For video seeked event
   socket.on('video-seeked', (roomId, videoBarValue, serverTime) => {
-    const adjustedTime = videoBarValue + (Date.now() - serverTime) / 1000 - serverTimeOffset / 1000; // Adjust for latency and server offset
+    const date = new Date(); // Store the Date object
+    const clientReceiveTime = date.getSeconds(); // Use getSeconds() for client time
+    
+    const adjustedTime = videoBarValue + (clientReceiveTime - serverTime) - serverTimeOffset; // Adjust for latency and offset
     player.seekTo(adjustedTime, true);
     console.log(`Seeked video to ${adjustedTime}`);
   });
   
+  // For video paused event
   socket.on('video-paused', (roomId, currentTime, serverTime) => {
-    const adjustedTime = currentTime + (Date.now() - serverTime) / 1000 - serverTimeOffset / 1000;
+    const date = new Date(); // Store the Date object
+    const clientReceiveTime = date.getSeconds(); // Use getSeconds() for client time
+    
+    const adjustedTime = currentTime + (clientReceiveTime - serverTime) - serverTimeOffset;
     player.pauseVideo();
     player.seekTo(adjustedTime, true);
     console.log(`Video paused at ${adjustedTime}`);
   });
   
+  // For video played event
   socket.on('video-played', (roomId, currentTime, serverTime) => {
-    const adjustedTime = currentTime + (Date.now() - serverTime) / 1000 - serverTimeOffset / 1000;
+    const date = new Date(); // Store the Date object
+    const clientReceiveTime = date.getSeconds(); // Use getSeconds() for client time
+    
+    const adjustedTime = currentTime + (clientReceiveTime - serverTime) - serverTimeOffset;
     player.seekTo(adjustedTime, true);
     player.playVideo();
     console.log(`Video played from ${adjustedTime}`);
   });
-
+  
+  // Sync state event for the video
   socket.on("sync-state", ({ videoId, currentTime, isPlaying, serverTime }) => {
-    const adjustedTime = currentTime + (Date.now() - serverTime - serverTimeOffset);
+    const date = new Date(); // Store the Date object
+    const clientReceiveTime = date.getSeconds(); // Use getSeconds() for client time
+    
+    const adjustedTime = currentTime + (clientReceiveTime - serverTime - serverTimeOffset); // Adjust for latency and offset
     loadVideo(videoId);
   
     if (isPlaying) {
@@ -224,6 +241,7 @@ if (roomId) {
       player.pauseVideo();
     }
   });
+
 
   
 } else {
