@@ -551,6 +551,7 @@ function loadVideo(videoId) {
       const newTime = videoBar.value;
       emitWithSync("video-seek", { roomId, videoBarValue: newTime });
       player.seekTo(newTime, true);
+    }
   });
 
   videoBar.addEventListener('mouseup', () => {
