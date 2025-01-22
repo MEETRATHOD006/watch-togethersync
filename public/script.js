@@ -511,19 +511,6 @@ function loadVideo(videoId) {
         // Set the initial volume to 50%
         player.setVolume(50);
         volumeBar.value = 50; // Sync the volume bar with the initial volume
-        let bufferCheckInterval = setInterval(() => {
-          const bufferPercentage = event.target.getVideoBytesLoaded() / event.target.getVideoBytesTotal();
-          if (bufferPercentage > 0.8) { // Check if more than 80% of the video is buffered
-            clearInterval(bufferCheckInterval);
-            console.log('Video preloaded');
-            event.target.playVideo(); // Now play the video after it's preloaded
-            // Sync the videoBar with the video's progress
-            const duration = event.target.getDuration();
-            videoBar.max = duration;
-            videoBar.value = 0; // Start at 0
-            currentVideoTime = 0;
-          }
-        }, 500); // Check every 500ms
         
         // Populate speed menu once the video is ready
         populatePlaybackSpeedMenu();
