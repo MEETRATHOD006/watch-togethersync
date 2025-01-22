@@ -202,6 +202,18 @@ if (roomId) {
     console.log(`Video played from ${adjustedTime}`);
   });
 
+  socket.on("sync-state", ({ videoId, currentTime, isPlaying, serverTime }) => {
+    const adjustedTime = currentTime + (Date.now() - serverTime - serverTimeOffset) / 1000;
+    loadVideo(videoId);
+  
+    if (isPlaying) {
+      player.seekTo(adjustedTime, true);
+      player.playVideo();
+    } else {
+      player.seekTo(adjustedTime, true);
+      player.pauseVideo();
+    }
+  });
 
   
 } else {
