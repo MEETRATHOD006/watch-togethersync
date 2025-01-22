@@ -111,8 +111,13 @@ io.on("connection", (socket) => {
 
     // Send current video and time if any
     if (rooms[roomId]) {
-      const roomData = rooms[roomId];
-      socket.emit("video-sync", roomData.videoId, roomData.currentTime, roomData.isPlaying, Date.now());
+      const roomState = rooms[roomId];
+      socket.emit("sync-state", {
+        videoId: roomState.videoId,
+        currentTime: roomState.currentTime,
+        isPlaying: roomState.isPlaying,
+        serverTime: Date.now(),
+      });
     }
     
     socket.on("disconnect", () => {
