@@ -27,8 +27,18 @@ socket.on("pong", (clientSendTime, serverReceiveTime) => {
 });
 
 // Periodically sync time every 30 seconds
-setInterval(syncTime, 30000);
-// syncTime();
+setInterval(, 30000);
+syncTime();
+
+// Function to convert milliseconds to h:m:s format
+function msToHMS(ms) {
+  const seconds = Math.floor(ms / 1000);
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  return `${hours}:${minutes}:${remainingSeconds}`;
+}
 
 function emitWithSync(eventName, data = {}) {
   const syncedTime = Date.now() + serverTimeOffset;
