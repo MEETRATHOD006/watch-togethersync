@@ -515,10 +515,8 @@ function loadVideo(videoId) {
         // Populate speed menu once the video is ready
         populatePlaybackSpeedMenu();
         syncInterval = setInterval(() => {
-          if (!isUserInteracting && player && typeof player.getCurrentTime === 'function') {
-            const currentTime = player.getCurrentTime();
-            videoBar.value = currentTime;
-          }
+          const currentTime = player.getCurrentTime();
+          videoBar.value = currentTime;
         }, 500); // Update every 500ms
       },
       onStateChange: (event) => {
