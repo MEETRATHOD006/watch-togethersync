@@ -9,6 +9,32 @@ socket.on("connect", () => {
   console.log("Connected to Socket.IO server with ID:", socket.id);
 });
 
+let serverTimeOffset = 0;
+let debounceTimeout;
+
+function syncTime() {
+  const clientSendTime = Date.now();
+  socket.emit("ping", clientSendTime);
+}
+
+socket.on("pong", (clientSendTime, serverReceiveTime) => {
+  const clientReceiveTime = Date.now();
+  const roundTripTime = clientReceiveTime - clientSendTime;
+  const serverResponseTime = serverReceiveTime + roundTripTime / 2;
+
+  serverTimeOffset = serverResponseTime - clientReceiveTime; // Calculate offset
+  console.log(`Time offset with server: ${serverTimeOffset} ms`);
+});
+
+// Periodically sync time every 30 seconds
+setInterval(syncTime, 30000);
+// syncTime();
+
+function emitWithSync(eventName, data = {}) {
+  const syncedTime = Date.now() + serverTimeOffset;
+  socket.emit(eventName, { ...data, clientTime: syncedTime });
+}
+
 const videoGrid = document.getElementById("displayvideocalls");
 
 const apiKey = 'AIzaSyDb2q13EkVi9ae2FRym4UBqyoOVKbe-Ut4';
@@ -147,9 +173,11 @@ if (roomId) {
   });
 
   // Listen for video-sync event to sync the video across users
-  socket.on('video-sync', (videoId, currentTime, isPlaying) => {
+  socket.on('video-sync', (videoId, serverTime, isPlaying) => {
     if (currentVideoId === videoId) return;  // Don't reload if the video is already the same
-  
+    const latencyAdjustedTime = serverTime - serverTimeOffset;
+    const currentTime = (Date.now() - latencyAdjustedTime) / 1000;
+    
     console.log(`Syncing video for all users: ${videoId}`);
     loadVideo(videoId);
   });
@@ -505,12 +533,12 @@ function loadVideo(videoId) {
 
   videoBar.addEventListener('change', () => {
     if (player && typeof player.seekTo === 'function') {
-      const newTime = videoBar.value;
-      if (Math.abs(newTime - lastSentTime) > 1) {
-        lastSentTime = newTime; // Update last sent time
+      clearTimeout(debounceTimeout);
+      debounceTimeout = setTimeout(() => {
+        const newTime = videoBar.value;
+        emitWithSync("video-seek", { roomId, videoBarValue: newTime });
         player.seekTo(newTime, true);
-        socket.emit('video-seek', { roomId, videoBarValue: newTime });
-      }
+      }, 300); // 300ms debounce
     }
   });
 
@@ -532,14 +560,20 @@ function loadVideo(videoId) {
         playPauseIcon.classList.remove('fa-pause');
         playPauseIcon.classList.add('fa-play');
         lastPlayerState = YT.PlayerState.PAUSED; // Update state manually
-        socket.emit('video-pause', {roomId, currentTime: player.getCurrentTime()});
+        emitWithSync("video-pause", {
+          roomId,
+          currentTime: player.getCurrentTime(),
+        });
         console.log('pause emite')
         player.pauseVideo();
       } else {
         playPauseIcon.classList.remove('fa-play');
         playPauseIcon.classList.add('fa-pause');
         lastPlayerState = YT.PlayerState.PLAYING; // Update state manually
-        socket.emit('video-play', {roomId, currentTime: player.getCurrentTime()});
+        emitWithSync("video-play", {
+          roomId,
+          currentTime: player.getCurrentTime(),
+        });
         console.log('playe emite')
         player.playVideo();
       }
