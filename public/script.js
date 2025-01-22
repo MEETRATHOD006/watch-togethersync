@@ -27,7 +27,7 @@ socket.on("pong", (clientSendTime, serverReceiveTime) => {
 });
 
 // Periodically sync time every 30 seconds
-setInterval(, 30000);
+setInterval(syncTime, 30000);
 syncTime();
 
 // Function to convert milliseconds to h:m:s format
