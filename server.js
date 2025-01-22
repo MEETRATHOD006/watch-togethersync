@@ -110,8 +110,9 @@ io.on("connection", (socket) => {
     console.log(`User ${userId} joined room ${roomId}`);
 
     // Send current video and time if any
-    if (rooms[roomId] && rooms[roomId].videoId) {
-      socket.emit('video-sync', rooms[roomId].videoId, rooms[roomId].currentTime);
+    if (rooms[roomId]) {
+      const roomData = rooms[roomId];
+      socket.emit("video-sync", roomData.videoId, roomData.currentTime, roomData.isPlaying, Date.now());
     }
     
     socket.on("disconnect", () => {
@@ -131,30 +132,38 @@ io.on("connection", (socket) => {
       socket.to(roomId).emit('video-sync', videoId, rooms[roomId].currentTime, rooms[roomId].isPlaying);
     });
     
-    socket.on('video-seek', (data) => {
+    socket.on("video-seek", (data) => {
       const { roomId, videoBarValue } = data;
       if (!rooms[roomId]) return;
     
       rooms[roomId].currentTime = videoBarValue;
-      socket.to(roomId).emit('video-seeked', roomId, videoBarValue);
+    
+      io.to(roomId).emit("video-seeked", roomId, videoBarValue, Date.now());
     });
     
-    socket.on('video-pause', (data) => {
+    socket.on("video-pause", (data) => {
       const { roomId, currentTime } = data;
       if (!rooms[roomId]) return;
     
       rooms[roomId].isPlaying = false;
       rooms[roomId].currentTime = currentTime;
-      socket.to(roomId).emit('video-paused', roomId, currentTime);
+    
+      io.to(roomId).emit("video-paused", roomId, currentTime, Date.now());
     });
     
-    socket.on('video-play', (data) => {
+    socket.on("video-play", (data) => {
       const { roomId, currentTime } = data;
       if (!rooms[roomId]) return;
     
       rooms[roomId].isPlaying = true;
       rooms[roomId].currentTime = currentTime;
-      socket.to(roomId).emit('video-played', roomId, currentTime);
+    
+      io.to(roomId).emit("video-played", roomId, currentTime, Date.now());
+    });
+
+    socket.on("ping", (clientSendTime) => {
+      const serverReceiveTime = Date.now();
+      socket.emit("pong", clientSendTime, serverReceiveTime);
     });
 
 
