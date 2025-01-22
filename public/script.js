@@ -548,13 +548,9 @@ function loadVideo(videoId) {
 
   videoBar.addEventListener('change', () => {
     if (player && typeof player.seekTo === 'function') {
-      clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(() => {
-        const newTime = videoBar.value;
-        emitWithSync("video-seek", { roomId, videoBarValue: newTime });
-        player.seekTo(newTime, true);
-      }, 300); // 300ms debounce
-    }
+      const newTime = videoBar.value;
+      emitWithSync("video-seek", { roomId, videoBarValue: newTime });
+      player.seekTo(newTime, true);
   });
 
   videoBar.addEventListener('mouseup', () => {
