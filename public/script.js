@@ -182,23 +182,26 @@ if (roomId) {
     loadVideo(videoId);
   });
   
-  socket.on('video-seeked', (roomId, videoBarValue) => {
-    const newTime = videoBarValue;
-    player.seekTo(newTime, true);
-    console.log(`Seeked video to ${newTime}`);
+  socket.on('video-seeked', (roomId, videoBarValue, serverTime) => {
+    const adjustedTime = videoBarValue + (Date.now() - serverTime - serverTimeOffset) / 1000; // Adjust for latency
+    player.seekTo(adjustedTime, true);
+    console.log(`Seeked video to ${adjustedTime}`);
   });
   
-  socket.on('video-paused', (roomId, currentTime) => {
+  socket.on('video-paused', (roomId, currentTime, serverTime) => {
+    const adjustedTime = currentTime + (Date.now() - serverTime - serverTimeOffset) / 1000; // Adjust for latency
     player.pauseVideo();
-    player.seekTo(currentTime, true);
-    console.log('Video paused');
+    player.seekTo(adjustedTime, true);
+    console.log(`Video paused at ${adjustedTime}`);
   });
   
-  socket.on('video-played', (roomId, currentTime) => {
+  socket.on('video-played', (roomId, currentTime, serverTime) => {
+    const adjustedTime = currentTime + (Date.now() - serverTime - serverTimeOffset) / 1000; // Adjust for latency
+    player.seekTo(adjustedTime, true);
     player.playVideo();
-    player.seekTo(currentTime, true);
-    console.log('Video played');
+    console.log(`Video played from ${adjustedTime}`);
   });
+
 
   
 } else {
