@@ -3,6 +3,9 @@ const socket = io("https://watch-togethersync.onrender.com"); // Update the URL 
 
 const peers = {}; // Store peer connections
 let localStream; // Store the local video stream
+let isScreenSharing = false; // Flag to check screen sharing status
+const startScreenShareBtn = document.getElementById("startScreenShare");
+const stopScreenShareBtn = document.getElementById("stopScreenShare");
 
 // Connection established
 socket.on("connect", () => {
@@ -167,6 +170,43 @@ if (roomId) {
       individualsVideo.append(video);
     }
   }
+
+    // Start screen sharing
+    startScreenShareBtn.addEventListener("click", () => {
+      if (isScreenSharing) return;
+  
+      navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: false,
+      }).then((screenStream) => {
+        isScreenSharing = true;
+        const screenTrack = screenStream.getVideoTracks()[0];
+  
+        // Replace video track in localStream
+        const sender = myPeer.connections[Object.keys(myPeer.connections)[0]][0].peerConnection
+          .getSenders()
+          .find((s) => s.track.kind === "video");
+        sender.replaceTrack(screenTrack);
+  
+        screenTrack.onended = () => stopScreenShare();
+      });
+    });
+
+    // Stop screen sharing
+  stopScreenShareBtn.addEventListener("click", stopScreenShare);
+
+  function stopScreenShare() {
+    if (!isScreenSharing) return;
+
+    const videoTrack = localStream.getVideoTracks()[0];
+    const sender = myPeer.connections[Object.keys(myPeer.connections)[0]][0].peerConnection
+      .getSenders()
+      .find((s) => s.track.kind === "video");
+    sender.replaceTrack(videoTrack);
+
+    isScreenSharing = false;
+  }
+  
   // Event listener for the search bar
   searchbar.addEventListener('input', async (e) => {
     const query = e.target.value.trim();
