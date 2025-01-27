@@ -191,46 +191,52 @@ if (roomId) {
   }
 
   // Listen for screen share track information from other users
-  socket.on("screen-share-started", (roomId, trackInfo) => {
-  // Reconstruct the MediaStream from the track info
-  navigator.mediaDevices.enumerateDevices().then(devices => {
-    const videoDevice = devices.find(device => device.kind === 'videoinput');
-    
-    if (videoDevice) {
-      // Get the MediaStream for the specific device
-      navigator.mediaDevices.getUserMedia({ video: { deviceId: videoDevice.deviceId } })
-        .then(userStream => {
-          const mediaStream = new MediaStream();
-          console.log('User stream tracks:', userStream.getTracks());
-          // Use the trackInfo to get the specific track from the user stream
-          const videoTrack = userStream.getVideoTracks().find(track => track.id === trackInfo.trackId);
-          console.log("videoTrack", videoTrack);
-          if (videoTrack) {
-            mediaStream.addTrack(videoTrack);  // Add the track to the stream
-
-            // Create a video element for the screen share
-            const screenVideo = document.createElement('video');
-            screenVideo.srcObject = mediaStream;
-            screenVideo.muted = true;
-            screenVideo.classList.add('sharedScreen');
-            screenVideo.id = "videoPlayer";  // Optional: Assign an ID for the video element
-
-            console.log("screenVideo", screenVideo); // Confirm the video element is created
-
-            // Append to the video element with id="video"
-            const videoElement = document.getElementById("video");
-            if (videoElement) {
-              videoElement.append(screenVideo); // Append inside the #video div
-              screenVideo.play();
+    socket.on("screen-share-started", (roomId, trackInfo) => {
+    // Reconstruct the MediaStream from the track info
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+      const videoDevice = devices.find(device => device.kind === 'videoinput');
+      
+      if (videoDevice) {
+        // Get the MediaStream for the specific device (only if needed)
+        navigator.mediaDevices.getUserMedia({ video: { deviceId: videoDevice.deviceId } })
+          .then(userStream => {
+            const mediaStream = new MediaStream();
+            
+            // Instead of matching by trackId, match by kind or label
+            const videoTrack = userStream.getVideoTracks().find(track => {
+              // Match track based on kind or label
+              return track.kind === trackInfo.kind || track.label === trackInfo.label;
+            });
+            console.log("videoTrack", videoTrack);
+            if (videoTrack) {
+              mediaStream.addTrack(videoTrack); // Add the track to the stream
+  
+              // Create a video element for the screen share
+              const screenVideo = document.createElement('video');
+              screenVideo.srcObject = mediaStream;
+              screenVideo.muted = true;
+              screenVideo.classList.add('sharedScreen');
+              screenVideo.id = "videoPlayer";  // Optional: Assign an ID for the video element
+  
+              console.log(screenVideo); // Confirm the video element is created
+  
+              // Append to the video element with id="video"
+              const videoElement = document.getElementById("video");
+              if (videoElement) {
+                videoElement.append(screenVideo); // Append inside the #video div
+                screenVideo.play();
+              }
+            } else {
+              console.error("No matching video track found.");
             }
-          }
-        })
-        .catch((err) => {
-          console.error("Error accessing the video device for screen share:", err);
-        });
-    }
+          })
+          .catch((err) => {
+            console.error("Error accessing the video device for screen share:", err);
+          });
+      }
+    });
   });
-});
+
 
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
