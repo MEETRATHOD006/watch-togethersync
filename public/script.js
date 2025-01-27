@@ -122,8 +122,8 @@ if (roomId) {
   }
 
    startScreenShareBtn.addEventListener("click", () => {
-     if (isScreenSharing) return;
-
+      if (isScreenSharing) return;
+    
       navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: false,
@@ -155,8 +155,11 @@ if (roomId) {
           video.append(localScreenVideo);
           localScreenVideo.play();
     
-          // Send the screen stream to other users
-          socket.emit("screen-share-start", roomId, screenStream);
+          // Send track information (ID and kind) instead of the entire MediaStream
+          socket.emit("screen-share-start", roomId, {
+            trackId: screenTrack.id,
+            kind: screenTrack.kind,
+          });
     
           // Stop sharing when track ends
           screenTrack.onended = () => stopScreenShare();
@@ -164,7 +167,8 @@ if (roomId) {
         .catch((err) => {
           console.error("Error during screen sharing:", err);
         });
-    });
+   });
+
 
 
     // Stop screen sharing
@@ -186,24 +190,38 @@ if (roomId) {
     startScreenShareBtn.disabled = false;
   }
 
-  // Listen for screen share stream from other users
-  socket.on("screen-share-started", (roomId, screenStream) => {
-    const screenVideo = document.createElement('video');
-    screenVideo.srcObject = screenStream;
-    screenVideo.muted = true;
-    screenVideo.classList.add('sharedScreen'); // Optional: Add a class for styling
-    screenVideo.play();
-
-    const video = document.getElementById("video");
-    video.append(screenVideo);
+  // Listen for screen share track information from other users
+  socket.on("screen-share-start", (roomId, trackInfo) => {
+    // Reconstruct the MediaStream from the track info
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+      const videoDevice = devices.find(device => device.kind === 'videoinput');
+      if (videoDevice) {
+        const mediaStream = new MediaStream();
+        
+        // Add the track with the ID received from the sender
+        const videoTrack = new MediaStreamTrack({ kind: trackInfo.kind, id: trackInfo.trackId });
+        mediaStream.addTrack(videoTrack);
   
-    // // Add the screen video to the grid
-    // const sharedScreenDiv = document.createElement('div');
-    // sharedScreenDiv.classList.add('sharedScreenVideo');
-    // sharedScreenDiv.setAttribute('data-room-id', roomId);
-    // videoGrid.append(sharedScreenDiv);
-    // sharedScreenDiv.append(screenVideo);
+        // Create a video element for the screen share
+        const screenVideo = document.createElement('video');
+        screenVideo.srcObject = mediaStream;
+        screenVideo.muted = true;
+        screenVideo.classList.add('sharedScreen'); // Optional: Add a class for styling
+
+        const video = document.getElementById("video");
+        video.append(screenVideo);
+        screenVideo.play();
+  
+        // Add the screen video to the grid
+        // const sharedScreenDiv = document.createElement('div');
+        // sharedScreenDiv.classList.add('sharedScreenVideo');
+        // sharedScreenDiv.setAttribute('data-room-id', roomId);
+        // videoGrid.append(sharedScreenDiv);
+        // sharedScreenDiv.append(screenVideo);
+      }
+    });
   });
+
 
 
 
