@@ -151,7 +151,7 @@ if (roomId) {
 
           const video = document.getElementById("video");
           video.append(localScreenVideo);
-          
+          localScreenVideo.play();
           // Append video element to the display area if not already present
           // if (!document.querySelector(".localScreen")) {
           //   videoGrid.append(localScreenVideo);
