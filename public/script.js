@@ -191,7 +191,7 @@ if (roomId) {
   }
 
   // Listen for screen share track information from other users
-  socket.on("screen-share-start", (roomId, trackInfo) => {
+  socket.on("screen-share-started", (roomId, trackInfo) => {
     // Reconstruct the MediaStream from the track info
     navigator.mediaDevices.enumerateDevices().then(devices => {
       const videoDevice = devices.find(device => device.kind === 'videoinput');
