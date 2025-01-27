@@ -122,44 +122,57 @@ if (roomId) {
     }
   }
 
-    // Start screen sharing
-    startScreenShareBtn.addEventListener("click", () => {
+   startScreenShareBtn.addEventListener("click", () => {
       if (isScreenSharing) return;
-  
+    
       navigator.mediaDevices.getDisplayMedia({
         video: true,
-        audio: false,
+        audio: false, // You can enable audio if needed
       }).then((screenStream) => {
         isScreenSharing = true;
         const screenTrack = screenStream.getVideoTracks()[0];
-  
-        // Replace video track in localStream
+    
+        // Replace the video track in localStream
         const sender = myPeer.connections[Object.keys(myPeer.connections)[0]][0].peerConnection
           .getSenders()
           .find((s) => s.track.kind === "video");
-        sender.replaceTrack(screenTrack);
-  
+        if (sender) sender.replaceTrack(screenTrack);
+    
+        // Update localStream to reflect the new screen stream
+        localStream = screenStream;
+        const screenVideo = document.getElementById("video");
+        addVideoStream(screenVideo, screenStream, "screenShare");
+    
+        // Stop screen share when the user stops it
         screenTrack.onended = () => stopScreenShare();
+        stopScreenShareBtn.disabled = false;
+        startScreenShareBtn.disabled = true;
+      }).catch((err) => {
+        console.error("Error during screen sharing:", err);
       });
     });
+
 
     // Stop screen sharing
   stopScreenShareBtn.addEventListener("click", stopScreenShare);
 
   function stopScreenShare() {
     if (!isScreenSharing) return;
-
+  
+    // Restore the video track from the original localStream
     const videoTrack = localStream.getVideoTracks()[0];
     const sender = myPeer.connections[Object.keys(myPeer.connections)[0]][0].peerConnection
       .getSenders()
       .find((s) => s.track.kind === "video");
-    sender.replaceTrack(videoTrack);
-
+  
+    if (sender && videoTrack) sender.replaceTrack(videoTrack);
+  
     isScreenSharing = false;
+    stopScreenShareBtn.disabled = true;
+    startScreenShareBtn.disabled = false;
   }
-  
 
-  
+
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
 }
