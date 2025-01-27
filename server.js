@@ -108,90 +108,20 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     io.to(roomId).emit('user-connected', userId);
     console.log(`User ${userId} joined room ${roomId}`);
-
-    // Send current video and time if any
-    if (rooms[roomId]) {
-      const roomState = rooms[roomId];
-      socket.emit("sync-state", {
-        videoId: roomState.videoId,
-        currentTime: roomState.currentTime,
-        isPlaying: roomState.isPlaying,
-        serverTime: Date.now(),
-      });
-    }
     
     socket.on("disconnect", () => {
       io.to(roomId).emit('user-disconnected', userId)
       console.log("User disconnected:", socket.id);
     });
   });
-  
-    // Store the current video state for each room
-    socket.on('video-loaded', (data) => {
-      const { roomId, videoId } = data;
-      if (!rooms[roomId]) rooms[roomId] = {};
-      
-      rooms[roomId].videoId = videoId;
-      rooms[roomId].currentTime = 0;
-      rooms[roomId].isPlaying = false;
-      
-      const date = new Date(); // Get current time in milliseconds
-      const clientTime = date.getTime();
-      
-      socket.to(roomId).emit('video-sync', videoId, rooms[roomId].currentTime, rooms[roomId].isPlaying, clientTime);
-    });
-    
-    // For video-seek, pause, and play events, use `getTime()` to ensure consistency
-    socket.on("video-seek", (data) => {
-      const { roomId, videoBarValue } = data;
-      if (!rooms[roomId]) return;
-    
-      rooms[roomId].currentTime = videoBarValue;
-    
-      const date = new Date();
-      const clientTime = date.getTime();
-    
-      io.to(roomId).emit("video-seeked", roomId, videoBarValue, clientTime);
-    });
-    
-    socket.on("video-pause", (data) => {
-      const { roomId, currentTime } = data;
-      if (!rooms[roomId]) return;
-    
-      rooms[roomId].isPlaying = false;
-      rooms[roomId].currentTime = currentTime;
-    
-      const date = new Date();
-      const clientTime = date.getTime();
-    
-      io.to(roomId).emit("video-paused", roomId, currentTime, clientTime);
-    });
-    
-    socket.on("video-play", (data) => {
-      const { roomId, currentTime } = data;
-      if (!rooms[roomId]) return;
-    
-      rooms[roomId].isPlaying = true;
-      rooms[roomId].currentTime = currentTime;
-    
-      const date = new Date();
-      const clientTime = date.getTime();
-    
-      io.to(roomId).emit("video-played", roomId, currentTime, clientTime);
-    });
 
-  
-  socket.on("ping", (clientSendTime) => {
-    const date = new Date();
-    const serverReceiveTime = date.getTime();
-    
-    console.log(`Client Send Time: ${clientSendTime}`);
-    console.log(`Server Receive Time: ${serverReceiveTime}`);
-    
-    socket.emit("pong", clientSendTime, serverReceiveTime);
+  socket.on("screen-share-start", (roomId, screenStream) => {
+    socket.to(roomId).emit("screen-share-started", roomId, screenStream);
   });
-
-
+  
+  socket.on("screen-share-stop", (roomId) => {
+    socket.to(roomId).emit("screen-share-stoped", roomId);
+  });
 
 });
 
