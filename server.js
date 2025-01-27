@@ -115,9 +115,12 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("screen-share-start", (roomId, screenStream) => {
-    socket.to(roomId).emit("screen-share-started", roomId, screenStream);
+  // Handle screen sharing initiation
+  socket.on("screen-share-start", (roomId, trackInfo) => {
+    // Emit the track info (ID and kind) to other users in the room
+    socket.to(roomId).emit("screen-share-started", roomId, trackInfo);
   });
+
   
   socket.on("screen-share-stop", (roomId) => {
     socket.to(roomId).emit("screen-share-stoped", roomId);
