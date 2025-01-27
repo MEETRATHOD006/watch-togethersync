@@ -201,7 +201,7 @@ if (roomId) {
       navigator.mediaDevices.getUserMedia({ video: { deviceId: videoDevice.deviceId } })
         .then(userStream => {
           const mediaStream = new MediaStream();
-          
+          console.log('User stream tracks:', userStream.getTracks());
           // Use the trackInfo to get the specific track from the user stream
           const videoTrack = userStream.getVideoTracks().find(track => track.id === trackInfo.trackId);
           console.log("videoTrack", videoTrack);
