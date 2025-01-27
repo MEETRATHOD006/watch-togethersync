@@ -26,7 +26,6 @@ const roomId = getRoomIdFromURL();
 
 if (roomId) {
   console.log(`Joined room: ${roomId}`);
-  searchbar.disabled = false; 
 
   
   // Emit join room event
