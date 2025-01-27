@@ -215,7 +215,7 @@ if (roomId) {
             screenVideo.classList.add('sharedScreen');
             screenVideo.id = "videoPlayer";  // Optional: Assign an ID for the video element
 
-            console.log(screenVideo); // Confirm the video element is created
+            console.log("screenVideo", screenVideo); // Confirm the video element is created
 
             // Append to the video element with id="video"
             const videoElement = document.getElementById("video");
@@ -231,11 +231,6 @@ if (roomId) {
     }
   });
 });
-
-
-
-
-
 
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
