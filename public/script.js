@@ -123,8 +123,8 @@ if (roomId) {
   }
 
    startScreenShareBtn.addEventListener("click", () => {
-      if (isScreenSharing) return;
-    
+     if (isScreenSharing) return;
+
       navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: false,
@@ -139,7 +139,9 @@ if (roomId) {
               .getSenders()
               .find((s) => s.track && s.track.kind === "video");
     
-            if (sender) sender.replaceTrack(screenTrack);
+            if (sender) {
+              sender.replaceTrack(screenTrack);
+            }
           }
     
           // Display the shared screen locally
@@ -149,15 +151,13 @@ if (roomId) {
           localScreenVideo.classList.add("localScreen");
           localScreenVideo.style.border = "2px solid red";
           localScreenVideo.id = "videoPlayer";
-
+    
           const video = document.getElementById("video");
           video.append(localScreenVideo);
           localScreenVideo.play();
-          // Append video element to the display area if not already present
-          // if (!document.querySelector(".localScreen")) {
-          //   videoGrid.append(localScreenVideo);
-          //   localScreenVideo.play();
-          // }
+    
+          // Send the screen stream to other users
+          socket.emit("screen-share-start", roomId, screenStream);
     
           // Stop sharing when track ends
           screenTrack.onended = () => stopScreenShare();
@@ -168,9 +168,8 @@ if (roomId) {
     });
 
 
-
     // Stop screen sharing
-  stopScreenShareBtn.addEventListener("click", stopScreenShare);
+    stopScreenShareBtn.addEventListener("click", stopScreenShare);
 
   function stopScreenShare() {
     if (!isScreenSharing) return;
@@ -187,6 +186,23 @@ if (roomId) {
     stopScreenShareBtn.disabled = true;
     startScreenShareBtn.disabled = false;
   }
+
+  // Listen for screen share stream from other users
+  socket.on("screen-share-started", (roomId, screenStream) => {
+    const screenVideo = document.createElement('video');
+    screenVideo.srcObject = screenStream;
+    screenVideo.muted = true;
+    screenVideo.classList.add('sharedScreen'); // Optional: Add a class for styling
+    screenVideo.play();
+  
+    // Add the screen video to the grid
+    const sharedScreenDiv = document.createElement('div');
+    sharedScreenDiv.classList.add('sharedScreenVideo');
+    sharedScreenDiv.setAttribute('data-room-id', roomId);
+    videoGrid.append(sharedScreenDiv);
+    sharedScreenDiv.append(screenVideo);
+  });
+
 
 
 } else {
