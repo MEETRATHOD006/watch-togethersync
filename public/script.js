@@ -14,6 +14,7 @@ socket.on("connect", () => {
 
 
 const videoGrid = document.getElementById("displayvideocalls"); 
+const video = document.getElementById("video");
 
 // Function to extract room ID from URL
 function getRoomIdFromURL() {
@@ -151,7 +152,6 @@ if (roomId) {
           localScreenVideo.style.border = "2px solid red";
           localScreenVideo.id = "videoPlayer";
     
-          const video = document.getElementById("video");
           video.append(localScreenVideo);
           localScreenVideo.play();
     
@@ -207,17 +207,10 @@ if (roomId) {
         screenVideo.srcObject = mediaStream;
         screenVideo.muted = true;
         screenVideo.classList.add('sharedScreen'); // Optional: Add a class for styling
-
-        const video = document.getElementById("video");
+        screenVideo.id = "videoPlayer"
+        
         video.append(screenVideo);
         screenVideo.play();
-  
-        // Add the screen video to the grid
-        // const sharedScreenDiv = document.createElement('div');
-        // sharedScreenDiv.classList.add('sharedScreenVideo');
-        // sharedScreenDiv.setAttribute('data-room-id', roomId);
-        // videoGrid.append(sharedScreenDiv);
-        // sharedScreenDiv.append(screenVideo);
       }
     });
   });
