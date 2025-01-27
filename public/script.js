@@ -204,7 +204,7 @@ if (roomId) {
           
           // Use the trackInfo to get the specific track from the user stream
           const videoTrack = userStream.getVideoTracks().find(track => track.id === trackInfo.trackId);
-          
+          console.log("videoTrack", videoTrack);
           if (videoTrack) {
             mediaStream.addTrack(videoTrack);  // Add the track to the stream
 
