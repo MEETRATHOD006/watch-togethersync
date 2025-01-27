@@ -194,26 +194,39 @@ if (roomId) {
   socket.on("screen-share-started", (roomId, trackInfo) => {
     // Reconstruct the MediaStream from the track info
     navigator.mediaDevices.enumerateDevices().then(devices => {
+      // Try to find the matching video input device
       const videoDevice = devices.find(device => device.kind === 'videoinput');
+      
       if (videoDevice) {
-        const mediaStream = new MediaStream();
-        
-        // Add the track with the ID received from the sender
-        const videoTrack = new MediaStreamTrack({ kind: trackInfo.kind, id: trackInfo.trackId });
-        mediaStream.addTrack(videoTrack);
+        // Get the MediaStream for the specific device
+        navigator.mediaDevices.getUserMedia({ video: { deviceId: videoDevice.deviceId } })
+          .then(userStream => {
+            const mediaStream = new MediaStream();
+            
+            // Use the trackInfo to get the specific track from the user stream
+            const videoTrack = userStream.getVideoTracks().find(track => track.id === trackInfo.trackId);
+            
+            if (videoTrack) {
+              mediaStream.addTrack(videoTrack);  // Add the track to the stream
   
-        // Create a video element for the screen share
-        const screenVideo = document.createElement('video');
-        screenVideo.srcObject = mediaStream;
-        screenVideo.muted = true;
-        screenVideo.classList.add('sharedScreen'); // Optional: Add a class for styling
-        screenVideo.id = "videoPlayer"
-        
-        video.append(screenVideo);
-        screenVideo.play();
+              // Create a video element for the screen share
+              const screenVideo = document.createElement('video');
+              screenVideo.srcObject = mediaStream;
+              screenVideo.muted = true;
+              screenVideo.classList.add('sharedScreen');
+              screenVideo.id = "videoPlayer";  // Optional: Assign an ID for the video element
+              
+              video.append(screenVideo);
+              screenVideo.play();
+            }
+          })
+          .catch((err) => {
+            console.error("Error accessing the video device for screen share:", err);
+          });
       }
     });
   });
+
 
 
 
