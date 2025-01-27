@@ -127,30 +127,42 @@ if (roomId) {
     
       navigator.mediaDevices.getDisplayMedia({
         video: true,
-        audio: false, // You can enable audio if needed
-      }).then((screenStream) => {
-        isScreenSharing = true;
-        const screenTrack = screenStream.getVideoTracks()[0];
+        audio: false,
+      })
+        .then((screenStream) => {
+          isScreenSharing = true;
+          const screenTrack = screenStream.getVideoTracks()[0];
     
-        // Replace the video track in localStream
-        const sender = myPeer.connections[Object.keys(myPeer.connections)[0]][0].peerConnection
-          .getSenders()
-          .find((s) => s.track.kind === "video");
-        if (sender) sender.replaceTrack(screenTrack);
+          // Replace video track in all existing connections
+          for (const connId in myPeer.connections) {
+            const sender = myPeer.connections[connId][0].peerConnection
+              .getSenders()
+              .find((s) => s.track && s.track.kind === "video");
     
-        // Update localStream to reflect the new screen stream
-        localStream = screenStream;
-        const screenVideo = document.getElementById("video");
-        addVideoStream(screenVideo, screenStream, "screenShare");
+            if (sender) sender.replaceTrack(screenTrack);
+          }
     
-        // Stop screen share when the user stops it
-        screenTrack.onended = () => stopScreenShare();
-        stopScreenShareBtn.disabled = false;
-        startScreenShareBtn.disabled = true;
-      }).catch((err) => {
-        console.error("Error during screen sharing:", err);
-      });
+          // Display the shared screen locally
+          const localScreenVideo = document.createElement("video");
+          localScreenVideo.srcObject = screenStream;
+          localScreenVideo.muted = true;
+          localScreenVideo.classList.add("localScreen");
+          localScreenVideo.style.border = "2px solid red";
+    
+          // Append video element to the display area if not already present
+          if (!document.querySelector(".localScreen")) {
+            videoGrid.append(localScreenVideo);
+            localScreenVideo.play();
+          }
+    
+          // Stop sharing when track ends
+          screenTrack.onended = () => stopScreenShare();
+        })
+        .catch((err) => {
+          console.error("Error during screen sharing:", err);
+        });
     });
+
 
 
     // Stop screen sharing
