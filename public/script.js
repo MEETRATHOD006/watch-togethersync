@@ -192,40 +192,46 @@ if (roomId) {
 
   // Listen for screen share track information from other users
   socket.on("screen-share-started", (roomId, trackInfo) => {
-    // Reconstruct the MediaStream from the track info
-    navigator.mediaDevices.enumerateDevices().then(devices => {
-      // Try to find the matching video input device
-      const videoDevice = devices.find(device => device.kind === 'videoinput');
-      
-      if (videoDevice) {
-        // Get the MediaStream for the specific device
-        navigator.mediaDevices.getUserMedia({ video: { deviceId: videoDevice.deviceId } })
-          .then(userStream => {
-            const mediaStream = new MediaStream();
-            
-            // Use the trackInfo to get the specific track from the user stream
-            const videoTrack = userStream.getVideoTracks().find(track => track.id === trackInfo.trackId);
-            
-            if (videoTrack) {
-              mediaStream.addTrack(videoTrack);  // Add the track to the stream
-  
-              // Create a video element for the screen share
-              const screenVideo = document.createElement('video');
-              screenVideo.srcObject = mediaStream;
-              screenVideo.muted = true;
-              screenVideo.classList.add('sharedScreen');
-              screenVideo.id = "videoPlayer";  // Optional: Assign an ID for the video element
-              
-              video.append(screenVideo);
+  // Reconstruct the MediaStream from the track info
+  navigator.mediaDevices.enumerateDevices().then(devices => {
+    const videoDevice = devices.find(device => device.kind === 'videoinput');
+    
+    if (videoDevice) {
+      // Get the MediaStream for the specific device
+      navigator.mediaDevices.getUserMedia({ video: { deviceId: videoDevice.deviceId } })
+        .then(userStream => {
+          const mediaStream = new MediaStream();
+          
+          // Use the trackInfo to get the specific track from the user stream
+          const videoTrack = userStream.getVideoTracks().find(track => track.id === trackInfo.trackId);
+          
+          if (videoTrack) {
+            mediaStream.addTrack(videoTrack);  // Add the track to the stream
+
+            // Create a video element for the screen share
+            const screenVideo = document.createElement('video');
+            screenVideo.srcObject = mediaStream;
+            screenVideo.muted = true;
+            screenVideo.classList.add('sharedScreen');
+            screenVideo.id = "videoPlayer";  // Optional: Assign an ID for the video element
+
+            console.log(screenVideo); // Confirm the video element is created
+
+            // Append to the video element with id="video"
+            const videoElement = document.getElementById("video");
+            if (videoElement) {
+              videoElement.append(screenVideo); // Append inside the #video div
               screenVideo.play();
             }
-          })
-          .catch((err) => {
-            console.error("Error accessing the video device for screen share:", err);
-          });
-      }
-    });
+          }
+        })
+        .catch((err) => {
+          console.error("Error accessing the video device for screen share:", err);
+        });
+    }
   });
+});
+
 
 
 
