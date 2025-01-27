@@ -148,6 +148,7 @@ if (roomId) {
           localScreenVideo.muted = true;
           localScreenVideo.classList.add("localScreen");
           localScreenVideo.style.border = "2px solid red";
+          localScreenVideo.id = "videoPlayer";
 
           const video = document.getElementById("video");
           video.append(localScreenVideo);
