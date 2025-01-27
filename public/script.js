@@ -148,12 +148,15 @@ if (roomId) {
           localScreenVideo.muted = true;
           localScreenVideo.classList.add("localScreen");
           localScreenVideo.style.border = "2px solid red";
-    
+
+          const video = document.getElementById("video");
+          video.append(localScreenVideo);
+          
           // Append video element to the display area if not already present
-          if (!document.querySelector(".localScreen")) {
-            videoGrid.append(localScreenVideo);
-            localScreenVideo.play();
-          }
+          // if (!document.querySelector(".localScreen")) {
+          //   videoGrid.append(localScreenVideo);
+          //   localScreenVideo.play();
+          // }
     
           // Stop sharing when track ends
           screenTrack.onended = () => stopScreenShare();
