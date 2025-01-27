@@ -193,13 +193,16 @@ if (roomId) {
     screenVideo.muted = true;
     screenVideo.classList.add('sharedScreen'); // Optional: Add a class for styling
     screenVideo.play();
+
+    const video = document.getElementById("video");
+    video.append(screenVideo);
   
-    // Add the screen video to the grid
-    const sharedScreenDiv = document.createElement('div');
-    sharedScreenDiv.classList.add('sharedScreenVideo');
-    sharedScreenDiv.setAttribute('data-room-id', roomId);
-    videoGrid.append(sharedScreenDiv);
-    sharedScreenDiv.append(screenVideo);
+    // // Add the screen video to the grid
+    // const sharedScreenDiv = document.createElement('div');
+    // sharedScreenDiv.classList.add('sharedScreenVideo');
+    // sharedScreenDiv.setAttribute('data-room-id', roomId);
+    // videoGrid.append(sharedScreenDiv);
+    // sharedScreenDiv.append(screenVideo);
   });
 
 
