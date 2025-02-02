@@ -145,7 +145,7 @@ startScreenShareBtn.addEventListener("click", () => {
       socket.emit("screen-share-start", roomId, myPeer.id); // 👈 Send user ID
 
       // Display screen locally in #video
-      const videoElement = document.getElementById("video");
+      const videoElement = document.getElementById("videoPlayer");
       videoElement.innerHTML = ""; // Clear previous content
       const screenVideo = document.createElement("video");
       screenVideo.srcObject = screenStream;
@@ -184,25 +184,11 @@ socket.on("screen-share-started", (sharedUserId) => {
     `.individualsVideo[data-user-id="${sharedUserId}"] video`
   );
   
-  // let sharedVideoElement = '';
-  // const indivs = document.querySelectorAll('.individualsVideo[data-user-id]')
-  // console.log('indivs', indivs)
-  // indivs.forEach(e=>{
-  //   if (e.dataset.userId === sharedUserId){
-  //     console.log(e);
-  //     sharedVideoElement = e.innerHTML;
-  //     console.log(sharedVideoElement);
-  //   }
-  // })
-    console.log(sharedVideoElement.srcObject)
-    // videoEle.innerHTML = ""; // Clear previous content
-    // const clonevideo = sharedVideoElement.cloneNode(true);
-    // console.log(clonevideo);
-    // videoEle.appendChild(clonevideo);
+  console.log(sharedVideoElement.srcObject)
 
-    let bigScreen = document.querySelector('#videoPlayer video')
-    bigScreen.srcObject = sharedVideoElement.srcObject;
-    bigScreen.play();
+  let bigScreen = document.querySelector('#videoPlayer video')
+  bigScreen.srcObject = sharedVideoElement.srcObject;
+  bigScreen.play();
 });
 
 // When screen sharing stops
