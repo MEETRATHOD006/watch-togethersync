@@ -14,7 +14,7 @@ socket.on("connect", () => {
 
 
 const videoGrid = document.getElementById("displayvideocalls"); 
-const video = document.getElementById("video");
+const videoEle = document.getElementById("video");
 
 // Function to extract room ID from URL
 function getRoomIdFromURL() {
@@ -152,7 +152,7 @@ if (roomId) {
           localScreenVideo.style.border = "2px solid red";
           localScreenVideo.id = "videoPlayer";
     
-          video.append(localScreenVideo);
+          videoEle.append(localScreenVideo);
           localScreenVideo.play();
     
           // Send track information (ID and kind) instead of the entire MediaStream
@@ -219,13 +219,14 @@ if (roomId) {
               screenVideo.id = "videoPlayer";  // Optional: Assign an ID for the video element
   
               console.log(screenVideo); // Confirm the video element is created
-  
+              videoEle.append(screenVideo);
+              screenVideo.play();
               // Append to the video element with id="video"
-              const videoElement = document.getElementById("video");
-              if (videoElement) {
-                videoElement.append(screenVideo); // Append inside the #video div
-                screenVideo.play();
-              }
+              // const videoElement = document.getElementById("video");
+              // if (videoElement) {
+              //   videoElement.append(screenVideo); // Append inside the #video div
+              //   screenVideo.play();
+              // }
             } else {
               console.error("No matching video track found.");
             }
