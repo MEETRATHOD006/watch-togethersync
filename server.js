@@ -118,6 +118,7 @@ io.on("connection", (socket) => {
   // Handle screen share start/stop
   socket.on("screen-share-start", (roomId, sharedUserId, screenStream) => {
     console.log(sharedUserId);
+    console.log(screenStream)
     socket.to(roomId).emit("screen-share-started", sharedUserId, screenStream);
   });
   
