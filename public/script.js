@@ -208,7 +208,7 @@ socket.on("screen-share-started", (sharedUserId, screenStream) => {
 
   let bigScreen = document.querySelector('#videoPlayer video')
   console.log(screenStream);
-  screenStreamC = superjson.deserialize(screenStream);
+  let screenStreamC = superjson.deserialize(screenStream);
   console.log(screenStreamC);
   bigScreen.srcObject = screenStreamC;
   bigScreen.play();
