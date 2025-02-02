@@ -112,7 +112,7 @@ if (roomId) {
       video.play();
     });
 
-    console.log(userId)
+    console.log('addVideoStream userId', userId)
 
     // Check if the video already exists in the videoGrid to avoid duplicates and empty divs
     if (![...videoGrid.getElementsByTagName('video')].some(v => v.srcObject === stream)) {
