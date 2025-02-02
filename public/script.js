@@ -107,19 +107,34 @@ if (roomId) {
   }
   
   function addVideoStream(video, stream, userId) {
-  video.srcObject = stream;
-  video.addEventListener('loadedmetadata', () => {
-    video.play();
-  });
+    video.srcObject = stream;
+    video.addEventListener('loadedmetadata', () => {
+      video.play();
+    });
+
+     // Check if the stream is a screen share
+    const isScreenShare = stream.getVideoTracks().some(track => 
+      track.kind === 'video' && track.label.toLowerCase().includes('screen')
+    );
+
+    if (isScreenShare) {
+      // Clear existing screen share in #video element
+      const videoContainer = document.getElementById("video");
+      videoContainer.innerHTML = ''; // Remove existing content
+      videoContainer.appendChild(video);
+      video.classList.add('sharedScreen');
+    } else {
+      // Regular video: add to participant grid
+      if (![...videoGrid.getElementsByTagName('video')].some(v => v.srcObject === stream)) {
+        const individualsVideo = document.createElement('div');
+        individualsVideo.classList.add('individualsVideo');
+        individualsVideo.setAttribute("data-user-id", userId);
+        videoGrid.append(individualsVideo);
+        individualsVideo.append(video);
+      }
+    }
 
     // Check if the video already exists in the videoGrid to avoid duplicates and empty divs
-    if (![...videoGrid.getElementsByTagName('video')].some(v => v.srcObject === stream)) {
-      const individualsVideo = document.createElement('div');
-      individualsVideo.classList.add('individualsVideo');
-      individualsVideo.setAttribute("data-user-id", userId);
-      videoGrid.append(individualsVideo);
-      individualsVideo.append(video);
-    }
   }
   
   startScreenShareBtn.addEventListener("click", async () => {
@@ -163,7 +178,17 @@ if (roomId) {
       });
   
       // Stop sharing when track ends
-      screenTrack.onended = () => stopScreenShare();
+      screenTrack.onended = () => {
+        stopScreenShare();
+        // Replace screen with original video
+        const videoTrack = localStream.getVideoTracks()[0];
+        for (const connId in myPeer.connections) {
+          const sender = myPeer.connections[connId][0].peerConnection
+            .getSenders()
+            .find((s) => s.track.kind === "video");
+          if (sender) sender.replaceTrack(videoTrack);
+        }
+      };
     } catch (err) {
       console.error("Error during screen sharing:", err);
       displayNotification("Screen sharing failed. Please try again.");
