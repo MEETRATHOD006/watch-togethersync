@@ -107,10 +107,12 @@ if (roomId) {
   }
   
   function addVideoStream(video, stream, userId) {
-  video.srcObject = stream;
-  video.addEventListener('loadedmetadata', () => {
-    video.play();
-  });
+    video.srcObject = stream;
+    video.addEventListener('loadedmetadata', () => {
+      video.play();
+    });
+
+    console.log(userId)
 
     // Check if the video already exists in the videoGrid to avoid duplicates and empty divs
     if (![...videoGrid.getElementsByTagName('video')].some(v => v.srcObject === stream)) {
