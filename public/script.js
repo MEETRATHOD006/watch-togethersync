@@ -119,6 +119,7 @@ if (roomId) {
       individualsVideo.setAttribute("data-user-id", userId);
       videoGrid.append(individualsVideo);
       individualsVideo.append(video);
+      videoEle.append(video);
     }
   }
 
