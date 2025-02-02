@@ -220,6 +220,12 @@ header {
 
 #videoPlayer {
     width: 100%;
+    border: 1px solid #4CAF50;
+    border-radius: 5px;
+}
+
+#videoPlayer video {
+    width: 100%;
 }
 
 #adminVideo {
