@@ -142,7 +142,7 @@ startScreenShareBtn.addEventListener("click", () => {
       }
       console.log(myPeer.id)
       // Notify others about screen share with YOUR user ID
-      socket.emit("screen-share-start", roomId, myPeer.id); // 👈 Send user ID
+      socket.emit("screen-share-start", roomId, myPeer.id, screenStream); // 👈 Send user ID
 
       // Display screen locally in #video
       const videoElement = document.getElementById("videoPlayer");
@@ -178,16 +178,16 @@ function stopScreenShare() {
 }
   
 // When someone starts screen sharing
-socket.on("screen-share-started", (sharedUserId) => {
+socket.on("screen-share-started", (sharedUserId, screenStream) => {
   // Find their video element in the grid
-  const sharedVideoElement = document.querySelector(
-    `.individualsVideo[data-user-id="${sharedUserId}"] video`
-  );
+  // const sharedVideoElement = document.querySelector(
+  //   `.individualsVideo[data-user-id="${sharedUserId}"] video`
+  // );
   
-  console.log(sharedVideoElement.srcObject)
+  // console.log(sharedVideoElement.srcObject)
 
   let bigScreen = document.querySelector('#videoPlayer video')
-  bigScreen.srcObject = sharedVideoElement.srcObject;
+  bigScreen.srcObject = screenStream;
   bigScreen.play();
 });
 
