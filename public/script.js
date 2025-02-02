@@ -195,9 +195,9 @@ socket.on("screen-share-started", (sharedUserId) => {
   })
     
     videoEle.innerHTML = ""; // Clear previous content
-    const clonevideo = sharedVideoElement.cloneNode(true);
-    console.log(clonevideo);
-    videoEle.appendChild(clonevideo);
+    // const clonevideo = sharedVideoElement.cloneNode(true);
+    // console.log(clonevideo);
+    videoEle.appendChild(sharedVideoElement);
 });
 
 // When screen sharing stops
