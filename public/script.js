@@ -187,6 +187,7 @@ socket.on("screen-share-started", (sharedUserId, screenStream) => {
   // console.log(sharedVideoElement.srcObject)
 
   let bigScreen = document.querySelector('#videoPlayer video')
+  console.log(screenStream);
   bigScreen.srcObject = screenStream;
   bigScreen.play();
 });
