@@ -142,6 +142,7 @@ startScreenShareBtn.addEventListener("click", () => {
       }
       console.log(myPeer.id)
       // Notify others about screen share with YOUR user ID
+      console.log(screenStream);
       socket.emit("screen-share-start", roomId, myPeer.id, screenStream); // 👈 Send user ID
 
       // Display screen locally in #video
