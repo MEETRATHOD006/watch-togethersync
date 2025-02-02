@@ -181,7 +181,7 @@ function stopScreenShare() {
 socket.on("screen-share-started", (sharedUserId) => {
   // Find their video element in the grid
   const sharedVideoElement = document.querySelector(
-    `.individualsVideo[data-user-id="${sharedUserId}"] video`
+    `.individualsVideo[data-user-id="${sharedUserId}"]`
   );
   
   // let sharedVideoElement = '';
