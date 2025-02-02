@@ -181,7 +181,7 @@ function stopScreenShare() {
 socket.on("screen-share-started", (sharedUserId) => {
   // Find their video element in the grid
   const sharedVideoElement = document.querySelector(
-    `.individualsVideo[data-user-id="${sharedUserId}"]`
+    `.individualsVideo[data-user-id="${sharedUserId}"] video`
   );
   
   // let sharedVideoElement = '';
@@ -194,7 +194,7 @@ socket.on("screen-share-started", (sharedUserId) => {
   //     console.log(sharedVideoElement);
   //   }
   // })
-    
+    console.log(sharedVideoElement.srcObject)
     videoEle.innerHTML = ""; // Clear previous content
     const clonevideo = sharedVideoElement.cloneNode(true);
     console.log(clonevideo);
