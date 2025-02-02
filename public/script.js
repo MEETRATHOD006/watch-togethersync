@@ -1,4 +1,4 @@
-const superjson = require('superjson'); // Works in CommonJS
+import superjson from 'superjson';
 
 // Import Socket.IO client
 const socket = io("https://watch-togethersync.onrender.com"); // Update the URL as per your server
