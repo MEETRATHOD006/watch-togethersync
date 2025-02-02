@@ -195,10 +195,13 @@ socket.on("screen-share-started", (sharedUserId) => {
   //   }
   // })
     console.log(sharedVideoElement.srcObject)
-    videoEle.innerHTML = ""; // Clear previous content
-    const clonevideo = sharedVideoElement.cloneNode(true);
-    console.log(clonevideo);
-    videoEle.appendChild(clonevideo);
+    // videoEle.innerHTML = ""; // Clear previous content
+    // const clonevideo = sharedVideoElement.cloneNode(true);
+    // console.log(clonevideo);
+    // videoEle.appendChild(clonevideo);
+
+    let bigScreen = document.querySelector('#querySelector video')
+    bigScreen.srcObject = sharedVideoElement.srcObject;
 });
 
 // When screen sharing stops
