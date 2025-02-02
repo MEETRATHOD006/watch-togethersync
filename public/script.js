@@ -202,6 +202,7 @@ socket.on("screen-share-started", (sharedUserId) => {
 
     let bigScreen = document.querySelector('#videoPlayer video')
     bigScreen.srcObject = sharedVideoElement.srcObject;
+    bigScreen..play();
 });
 
 // When screen sharing stops
