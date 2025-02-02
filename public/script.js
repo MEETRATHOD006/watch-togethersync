@@ -185,10 +185,11 @@ socket.on("screen-share-started", (sharedUserId) => {
   // );
   const sharedVideoElement = '';
   const indivs = document.querySelectorAll('.individualsVideo[data-user-id]')
+  console.log('indivs', indivs)
   indivs.forEach(e=>{
     if (e.dataset.userId === sharedUserId){
       console.log(e);
-      sharedVideoElement = e;
+      sharedVideoElement = e.innerHTML;
       console.log(sharedVideoElement);
     }
   })
