@@ -200,7 +200,7 @@ socket.on("screen-share-started", (sharedUserId) => {
     // console.log(clonevideo);
     // videoEle.appendChild(clonevideo);
 
-    let bigScreen = document.querySelector('#querySelector video')
+    let bigScreen = document.querySelector('#videoPlayer video')
     bigScreen.srcObject = sharedVideoElement.srcObject;
 });
 
