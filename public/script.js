@@ -172,8 +172,6 @@ function stopScreenShare() {
   socket.emit("screen-share-stop", roomId, myPeer.id); // 👈 Send user ID
 
   // Clear local #video element
-  const videoContainer = document.getElementById("video");
-  videoContainer.innerHTML = "";
   isScreenSharing = false;
 }
   
@@ -184,12 +182,11 @@ socket.on("screen-share-started", (sharerUserId) => {
     `.individualsVideo[data-user-id="${sharerUserId}"] video`
   );
 
-  if (sharerVideoElement) {
-    // Move it to the #video container
-    const videoContainer = document.getElementById("video");
-    videoContainer.innerHTML = ""; // Clear previous content
-    videoContainer.appendChild(sharerVideoElement.cloneNode(true)); // Clone to keep original in grid
-  }
+    
+    videoEle.innerHTML = ""; // Clear previous content
+    const clonevideo = sharerVideoElement.cloneNode(true);
+  console.log(clonevideo);
+    videoEle.appendChild(clonevideo);
 });
 
 // When screen sharing stops
