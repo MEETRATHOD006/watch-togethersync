@@ -1,4 +1,4 @@
-import superjson from 'superjson';
+import superjson from "https://esm.sh/superjson";
 
 // Import Socket.IO client
 const socket = io("https://watch-togethersync.onrender.com"); // Update the URL as per your server
