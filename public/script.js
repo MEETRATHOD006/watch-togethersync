@@ -1,9 +1,13 @@
 // Import Socket.IO client
 const socket = io("https://watch-togethersync.onrender.com"); // Update the URL as per your server
 
+import 'reflect-metadata';
+import { plainToInstance, instanceToPlain } from 'class-transformer';
+
 const peers = {}; // Store peer connections
 let localStream; // Store the local video stream
 let isScreenSharing = false; // Flag to check screen sharing status
+let screenStream = null;
 const startScreenShareBtn = document.getElementById("startScreenShare");
 const stopScreenShareBtn = document.getElementById("stopScreenShare");
 
@@ -157,7 +161,7 @@ startScreenShareBtn.addEventListener("click", () => {
       console.log(myPeer.id)
       
       // Notify others about screen share with YOUR user ID
-      let screenStreamPlain = toPlainObject(screenStream)
+      let screenStreamPlain = instanceToPlain(screenStream);
       console.log(screenStreamPlain);
       socket.emit("screen-share-start", roomId, myPeer.id, screenStreamPlain); // 👈 Send user ID
 
@@ -205,7 +209,8 @@ socket.on("screen-share-started", (sharedUserId, screenStream) => {
 
   let bigScreen = document.querySelector('#videoPlayer video')
   console.log(screenStream);
-  bigScreen.srcObject = screenStream;
+  screenStreamC = plainToInstance(MediaStream, screenStream);
+  bigScreen.srcObject = screenStreamC;
   bigScreen.play();
 });
 
