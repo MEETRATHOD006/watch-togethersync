@@ -22,6 +22,20 @@ function getRoomIdFromURL() {
   return pathParts.length > 1 && pathParts[1] ? pathParts[1] : null;
 }
 
+function toPlainObject(obj) {
+  return { ...obj, __type: obj.constructor.name }; // Add type metadata
+}
+
+// Restore from plain object
+function fromPlainObject(obj, typeMap) {
+    if (obj.__type && typeMap[obj.__type]) {
+        const instance = Object.assign(new typeMap[obj.__type](), obj);
+        delete instance.__type; // Remove metadata after restoration
+        return instance;
+    }
+    return obj; // Return as-is if no matching type
+}
+
 // Room-specific functionality
 const roomId = getRoomIdFromURL();
 
@@ -141,9 +155,11 @@ startScreenShareBtn.addEventListener("click", () => {
         if (sender) sender.replaceTrack(screenTrack);
       }
       console.log(myPeer.id)
+      
       // Notify others about screen share with YOUR user ID
-      console.log(screenStream);
-      socket.emit("screen-share-start", roomId, myPeer.id, screenStream); // 👈 Send user ID
+      let screenStreamPlain = toPlainObject(screenStream)
+      console.log(screenStreamPlain);
+      socket.emit("screen-share-start", roomId, myPeer.id, screenStreamPlain); // 👈 Send user ID
 
       // Display screen locally in #video
       const videoElement = document.getElementById("videoPlayer");
