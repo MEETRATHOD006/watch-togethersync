@@ -121,58 +121,57 @@ if (roomId) {
       individualsVideo.append(video);
     }
   }
-
-   startScreenShareBtn.addEventListener("click", () => {
-      if (isScreenSharing) return;
-    
-      navigator.mediaDevices.getDisplayMedia({
+  
+  startScreenShareBtn.addEventListener("click", async () => {
+    if (isScreenSharing) return;
+  
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: false,
-      })
-        .then((screenStream) => {
-          isScreenSharing = true;
-          const screenTrack = screenStream.getVideoTracks()[0];
-    
-          // Replace video track in all existing connections
-          for (const connId in myPeer.connections) {
-            const sender = myPeer.connections[connId][0].peerConnection
-              .getSenders()
-              .find((s) => s.track && s.track.kind === "video");
-    
-            if (sender) {
-              sender.replaceTrack(screenTrack);
-            }
-          }
-    
-          // Display the shared screen locally
-          const localScreenVideo = document.createElement("video");
-          localScreenVideo.srcObject = screenStream;
-          localScreenVideo.muted = true;
-          localScreenVideo.classList.add("localScreen");
-          localScreenVideo.style.border = "2px solid red";
-          localScreenVideo.id = "videoPlayer";
-    
-          video.append(localScreenVideo);
-          localScreenVideo.play();
-    
-          // Send track information (ID and kind) instead of the entire MediaStream
-          socket.emit("screen-share-start", roomId, {
-            trackId: screenTrack.id,
-            kind: screenTrack.kind,
-          });
-    
-          // Stop sharing when track ends
-          screenTrack.onended = () => stopScreenShare();
-        })
-        .catch((err) => {
-          console.error("Error during screen sharing:", err);
-        });
-   });
+      });
+  
+      isScreenSharing = true;
+      const screenTrack = screenStream.getVideoTracks()[0];
+  
+      // Replace video track in all existing connections
+      for (const connId in myPeer.connections) {
+        const sender = myPeer.connections[connId][0].peerConnection
+          .getSenders()
+          .find((s) => s.track && s.track.kind === "video");
+  
+        if (sender) {
+          sender.replaceTrack(screenTrack);
+        }
+      }
+  
+      // Display the shared screen locally
+      const localScreenVideo = document.createElement("video");
+      localScreenVideo.srcObject = screenStream;
+      localScreenVideo.muted = true;
+      localScreenVideo.classList.add("localScreen");
+      localScreenVideo.style.border = "2px solid red";
+      localScreenVideo.id = "videoPlayer";
+  
+      video.append(localScreenVideo);
+      localScreenVideo.play();
+  
+      // Send track information (ID and kind) instead of the entire MediaStream
+      socket.emit("screen-share-start", roomId, {
+        trackId: screenTrack.id,
+        kind: screenTrack.kind,
+      });
+  
+      // Stop sharing when track ends
+      screenTrack.onended = () => stopScreenShare();
+    } catch (err) {
+      console.error("Error during screen sharing:", err);
+      displayNotification("Screen sharing failed. Please try again.");
+    }
+  });
 
-
-
-    // Stop screen sharing
-    stopScreenShareBtn.addEventListener("click", stopScreenShare);
+  // Stop screen sharing
+  stopScreenShareBtn.addEventListener("click", stopScreenShare);
 
   function stopScreenShare() {
     if (!isScreenSharing) return;
