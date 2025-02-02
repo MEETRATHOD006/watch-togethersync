@@ -138,7 +138,7 @@ startScreenShareBtn.addEventListener("click", () => {
 
         if (sender) sender.replaceTrack(screenTrack);
       }
-
+      console.log(myPeer.id)
       // Notify others about screen share with YOUR user ID
       socket.emit("screen-share-start", roomId, myPeer.id); // 👈 Send user ID
 
