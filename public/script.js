@@ -131,6 +131,12 @@ if (roomId) {
   }
   
   function addVideoStream(video, stream, userId = myPeerId) {
+
+    if (document.querySelector(`.individualsVideo[data-user-id="${userId}"]`)) {
+      console.log(`Video element for user ${userId} already exists.`);
+      return;
+    }
+    
     video.srcObject = stream;
     video.addEventListener('loadedmetadata', () => {
       video.play();
