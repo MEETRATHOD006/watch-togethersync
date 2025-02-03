@@ -10,17 +10,17 @@ const stopScreenShareBtn = document.getElementById("stopScreenShare");
 const videoCallsbtn = document.getElementById("videocalls");
 const chatsbtn = document.getElementById("chats");
 const displayvideocallsDiv = document.getElementById("displayvideocalls");
-const chatsHereDiv = document.getElementById("chatsHere");
+const chatsDiv = document.getElementById("chats");
 
 videoCallsbtn.addEventListener("click", () => {
   console.log("videoCall clicked");
   displayvideocallsDiv.style.display = 'grid';
-  chatsHereDiv.style.display = 'none';
+  chatsDiv.style.display = 'none';
 });
 
-chatsHereDiv.addEventListener("click", () => {
+chatsDiv.addEventListener("click", () => {
   console.log("chats clicked");
-  chatsHereDiv.style.display = 'flex';
+  chatsDiv.style.display = 'flex';
   displayvideocallsDiv.style.display = 'none';
 });
 
