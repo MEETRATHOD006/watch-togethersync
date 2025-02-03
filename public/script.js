@@ -92,7 +92,7 @@ if (roomId) {
     
     // Listen for new user joining the room
     socket.on("user-connected", userId => {
-      if (userId !== myPeer.id) {  // Check if the userId is not the same as the current user's ID
+      if (userId !== myPeerId) {  // Check if the userId is not the same as the current user's ID
         connectToNewUser(userId, stream);
       }
       displayNotification(`${userId} has joined the room.`);
