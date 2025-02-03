@@ -159,6 +159,7 @@ header {
 }
 
 .peopleAndChat {
+    position: relative;
     width: 500px;
     height: 100%;
     border-right: 1px solid rgb(31 42 57);
@@ -462,4 +463,35 @@ li:hover #setting {
 
 #shared-screen-video {
   object-fit: contain;
+}
+
+#cm {
+    width: calc(100% - 1px);
+    border: 1px solid yellow;
+    height: 30px;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    color: white;
+    flex-direction: row;
+    gap: 20px;
+    padding-left: 15px;
+    align-items: center;
+}
+
+#mute {
+    height: 100%;
+    width: 30px;
+    background-color: rgba(117, 117, 117, 0.342);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#hideV {
+    height: 100%;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
