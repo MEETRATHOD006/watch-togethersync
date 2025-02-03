@@ -74,6 +74,7 @@ if (roomId) {
     video: true,
     audio: true
   }).then(stream => {
+    localStream = stream;
     myPeer.on("open", id => {
       myPeerId = id;
       console.log("My Peer ID:", myPeerId);
@@ -196,23 +197,45 @@ stopScreenShareBtn.addEventListener("click", stopScreenShare);
 function stopScreenShare() {
   if (!isScreenSharing) return;
 
-  // Restore original video track
+  // Ensure localStream is available
+  if (!localStream) {
+    console.error("Local stream is not available.");
+    return;
+  }
+  
+  // Retrieve the original video track from localStream
   const videoTrack = localStream.getVideoTracks()[0];
-  for (const connId in myPeer.connections) {
-    const sender = myPeer.connections[connId][0].peerConnection
-      .getSenders()
-      .find((s) => s.track?.kind === "video");
-    if (sender) sender.replaceTrack(videoTrack);
+  if (!videoTrack) {
+    console.error("No video track found on localStream.");
+    return;
   }
 
-  // Notify others
-  socket.emit("screen-share-stop", roomId, myPeer.id); // 👈 Send user ID
+  // Replace the current (screen-sharing) track with the original video track
+  for (const connId in myPeer.connections) {
+    // For each connection, find the sender responsible for video
+    const sender = myPeer.connections[connId][0].peerConnection
+      .getSenders()
+      .find((s) => s.track && s.track.kind === "video");
+    if (sender) {
+      sender.replaceTrack(videoTrack);
+    }
+  }
 
-  // Clear local #video element
+  // Clear the screen share display area (assuming #videoPlayer shows the screen share)
+  const videoElement = document.getElementById("videoPlayer");
+  if (videoElement) {
+    videoElement.innerHTML = "";
+  }
+
+  // Notify others that screen sharing has stopped
+  socket.emit("screen-share-stop", roomId, myPeer.id);
+
+  // Update state and UI buttons
   isScreenSharing = false;
   startScreenShareBtn.disabled = false;
   stopScreenShareBtn.disabled = true;
 }
+
   
 // When someone starts screen sharing
 socket.on("screen-share-started", (sharedUserId) => {
@@ -232,7 +255,7 @@ socket.on("screen-share-started", (sharedUserId) => {
 
 // When screen sharing stops
 socket.on("screen-share-stopped", (sharerUserId) => {
-  const videoContainer = document.getElementById("video");
+  const videoContainer = document.getElementById("videoPlayer");
   videoContainer.innerHTML = ""; // Clear the screen share
   startScreenShareBtn.disabled = false;
   stopScreenShareBtn.disabled = true;
