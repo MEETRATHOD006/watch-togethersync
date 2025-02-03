@@ -80,14 +80,20 @@ if (roomId) {
           const sharedVideoElement = document.querySelector(
             `.individualsVideo[data-user-id="${sharedUserId}"] video`
           );
-          
-          console.log(sharedVideoElement.srcObject)
+
+          console.log(sharedVideoElement);
+          if (sharedVideoElement){
+            let bigScreen = document.querySelector('#videoPlayer video')
+            bigScreen.srcObject = sharedVideoElement.srcObject;
+            bigScreen.play();
+            startScreenShareBtn.disabled = true;
+            stopScreenShareBtn.disabled = true;
+            console.log(sharedVideoElement.srcObject)
+          } else {
+            console.log("dfgfdgdfh")
+          }
         
-          let bigScreen = document.querySelector('#videoPlayer video')
-          bigScreen.srcObject = sharedVideoElement.srcObject;
-          bigScreen.play();
-          startScreenShareBtn.disabled = true;
-          stopScreenShareBtn.disabled = true;
+          
         });
       })
     })
