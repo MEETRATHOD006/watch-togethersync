@@ -56,12 +56,12 @@ if (roomId) {
   });
 
 
-  myPeer.on("open", id => {
-    myPeerId = id;
-    console.log("befor emit join_room", myPeerId)
-    socket.emit("join-room", roomId, myPeerId);
-    console.log("after emit room_join")
-  })
+  // myPeer.on("open", id => {
+  //   myPeerId = id;
+  //   console.log("befor emit join_room", myPeerId)
+  //   socket.emit("join-room", roomId, myPeerId);
+  //   console.log("after emit room_join")
+  // })
 
   
 
@@ -74,7 +74,13 @@ if (roomId) {
     video: true,
     audio: true
   }).then(stream => {
-    addVideoStream(myVideo, stream, myPeerId)
+    myPeer.on("open", id => {
+      myPeerId = id;
+      console.log("My Peer ID:", myPeerId);
+      socket.emit("join-room", roomId, myPeerId);
+      addVideoStream(myVideo, stream, myPeerId);  // Now pass the correct ID
+    });
+  
 
     myPeer.on('call', call => {
       call.answer(stream)
