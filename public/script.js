@@ -235,23 +235,6 @@ function stopScreenShare() {
   startScreenShareBtn.disabled = false;
   stopScreenShareBtn.disabled = true;
 }
-
-// When a new user joins and there is an active screen share, this event is triggered
-socket.on("active-screen-share", (sharedUserId) => {
-  console.log("Active screen share detected from user:", sharedUserId);
-  // You can use the same code you use for "screen-share-started"
-  const sharedVideoElement = document.querySelector(
-    `.individualsVideo[data-user-id="${sharedUserId}"] video`
-  );
-  
-  console.log(sharedVideoElement.srcObject)
-
-  let bigScreen = document.querySelector('#videoPlayer video')
-  bigScreen.srcObject = sharedVideoElement.srcObject;
-  bigScreen.play();
-  startScreenShareBtn.disabled = true;
-  stopScreenShareBtn.disabled = true;
-});
   
 // When someone starts screen sharing
 socket.on("screen-share-started", (sharedUserId) => {
