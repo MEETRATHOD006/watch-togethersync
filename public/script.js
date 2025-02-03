@@ -13,11 +13,13 @@ const displayvideocallsDiv = document.getElementById("displayvideocalls");
 const chatsHereDiv = document.getElementById("chatsHere");
 
 videoCallsbtn.addEventListener("click", () => {
+  console.log("videoCall clicked");
   displayvideocallsDiv.style.display = 'grid';
   chatsHereDiv.style.display = 'none';
 });
 
 chatsHereDiv.addEventListener("click", () => {
+  console.log("chats clicked");
   chatsHereDiv.style.display = 'flex';
   displayvideocallsDiv.style.display = 'none';
 });
