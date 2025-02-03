@@ -1,5 +1,3 @@
-import superjson from "https://esm.sh/superjson";
-
 // Import Socket.IO client
 const socket = io("https://watch-togethersync.onrender.com"); // Update the URL as per your server
 
@@ -23,20 +21,6 @@ const videoEle = document.getElementById("video");
 function getRoomIdFromURL() {
   const pathParts = window.location.pathname.split("/");
   return pathParts.length > 1 && pathParts[1] ? pathParts[1] : null;
-}
-
-function toPlainObject(obj) {
-  return { ...obj, __type: obj.constructor.name }; // Add type metadata
-}
-
-// Restore from plain object
-function fromPlainObject(obj, typeMap) {
-    if (obj.__type && typeMap[obj.__type]) {
-        const instance = Object.assign(new typeMap[obj.__type](), obj);
-        delete instance.__type; // Remove metadata after restoration
-        return instance;
-    }
-    return obj; // Return as-is if no matching type
 }
 
 // Room-specific functionality
