@@ -80,7 +80,7 @@ if (roomId) {
       call.answer(stream)
       const video = document.createElement('video')
       call.on('stream', userVideoStream => {
-        addVideoStream(video, userVideoStream)
+        addVideoStream(video, userVideoStream, myPeerId)
       })
     })
     
@@ -124,7 +124,7 @@ if (roomId) {
     console.log(peers);
   }
   
-  function addVideoStream(video, stream, userId = myPeerId) {
+  function addVideoStream(video, stream, userId) {
     video.srcObject = stream;
     video.addEventListener('loadedmetadata', () => {
       video.play();
