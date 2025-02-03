@@ -74,13 +74,13 @@ if (roomId) {
     video: true,
     audio: true
   }).then(stream => {
-    addVideoStream(myVideo, stream)
+    addVideoStream(myVideo, stream, myPeerId)
 
     myPeer.on('call', call => {
       call.answer(stream)
       const video = document.createElement('video')
       call.on('stream', userVideoStream => {
-        addVideoStream(video, userVideoStream, myPeerId)
+        addVideoStream(video, userVideoStream)
       })
     })
     
