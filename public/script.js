@@ -7,6 +7,20 @@ let localStream; // Store the local video stream
 let isScreenSharing = false; // Flag to check screen sharing status
 const startScreenShareBtn = document.getElementById("startScreenShare");
 const stopScreenShareBtn = document.getElementById("stopScreenShare");
+const videoCallsbtn = document.getElementById("videocalls");
+const chatsbtn = document.getElementById("chats");
+const displayvideocallsDiv = document.getElementById("displayvideocalls");
+const chatsHereDiv = document.getElementById("chatsHere");
+
+videoCallsbtn.addEventListener("click", () => {
+  displayvideocallsDiv.style.display = 'grid';
+  chatsHereDiv.style.display = 'none';
+});
+
+chatsHereDiv.addEventListener("click", () => {
+  chatsHereDiv.style.display = 'flex';
+  displayvideocallsDiv.style.display = 'none';
+});
 
 // Connection established
 socket.on("connect", () => {
