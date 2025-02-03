@@ -495,3 +495,52 @@ li:hover #setting {
     align-items: center;
     justify-content: center;
 }
+
+#chatsHere {
+    width: 100%;
+    height: calc(100% - 65px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
+
+#mainChat {
+    height: calc(91%);
+    border: 1px solid red;
+}
+
+#senderName {
+    width: 70%;
+    color: white;
+    height: 20px;
+    border-radius: 5px;
+    outline: none;
+    background: #00000000;
+    padding-left: 20px;
+    border: 1px solid rgb(31 42 57);
+}
+
+#message {
+    width: 70%;
+    height: 64px;
+    outline: none;
+    border-radius: 5px;
+    color: white;
+    background: #00000000;
+    text-overflow: revert-layer;
+    padding-left: 20px;
+    border: 1px solid rgb(31 42 57);
+}
+
+#sendbtn {
+    width: 24%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 12.5%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #4CAF50;
+    background-color: #3cdd42;
+}
