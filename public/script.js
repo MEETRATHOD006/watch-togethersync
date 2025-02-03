@@ -4,6 +4,7 @@ import superjson from "https://esm.sh/superjson";
 const socket = io("https://watch-togethersync.onrender.com"); // Update the URL as per your server
 
 const peers = {}; // Store peer connections
+let myPeerId = null;  // Store the peer ID
 let localStream; // Store the local video stream
 let isScreenSharing = false; // Flag to check screen sharing status
 const startScreenShareBtn = document.getElementById("startScreenShare");
@@ -56,7 +57,8 @@ if (roomId) {
 
 
   myPeer.on("open", id => {
-    console.log("befor emit join_room")
+    myPeerId = id;
+    console.log("befor emit join_room", myPeerId)
     socket.emit("join-room", roomId, id);
     console.log("after emit room_join")
   })
@@ -122,7 +124,7 @@ if (roomId) {
     console.log(peers);
   }
   
-  function addVideoStream(video, stream, userId) {
+  function addVideoStream(video, stream, userId = myPeerId) {
     video.srcObject = stream;
     video.addEventListener('loadedmetadata', () => {
       video.play();
