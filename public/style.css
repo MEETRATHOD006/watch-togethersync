@@ -543,4 +543,10 @@ li:hover #setting {
     border-radius: 5px;
     border: 1px solid #4CAF50;
     background-color: #3cdd42;
+    color: white;
+    font-size: 20px;
+}
+
+#sendbtn:active {
+    background-color: #00ff0a;
 }
