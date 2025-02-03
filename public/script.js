@@ -59,7 +59,7 @@ if (roomId) {
   myPeer.on("open", id => {
     myPeerId = id;
     console.log("befor emit join_room", myPeerId)
-    socket.emit("join-room", roomId, id);
+    socket.emit("join-room", roomId, myPeerId);
     console.log("after emit room_join")
   })
 
