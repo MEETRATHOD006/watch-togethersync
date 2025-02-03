@@ -184,6 +184,9 @@ startScreenShareBtn.addEventListener("click", () => {
       screenVideo.autoplay = true;
       screenVideo.muted = true;
       videoElement.appendChild(screenVideo);
+      startScreenShareBtn.disable = true;
+      stopScreenShareBtn.disable = false;
+      
     });
 });
 
@@ -207,6 +210,8 @@ function stopScreenShare() {
 
   // Clear local #video element
   isScreenSharing = false;
+  startScreenShareBtn.disable = false;
+  stopScreenShareBtn.disable = true;
 }
   
 // When someone starts screen sharing
@@ -221,12 +226,16 @@ socket.on("screen-share-started", (sharedUserId) => {
   let bigScreen = document.querySelector('#videoPlayer video')
   bigScreen.srcObject = sharedVideoElement.srcObject;
   bigScreen.play();
+  startScreenShareBtn.disable = true;
+  stopScreenShareBtn.disable = true;
 });
 
 // When screen sharing stops
 socket.on("screen-share-stopped", (sharerUserId) => {
   const videoContainer = document.getElementById("video");
   videoContainer.innerHTML = ""; // Clear the screen share
+  startScreenShareBtn.disable = false;
+  stopScreenShareBtn.disable = true;
 });
 
 
