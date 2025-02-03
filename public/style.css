@@ -467,7 +467,7 @@ li:hover #setting {
 
 #cm {
     width: calc(100% - 1px);
-    border: 1px solid yellow;
+    border-top: 1px solid rgb(31 42 57);
     height: 30px;
     position: absolute;
     bottom: 0;
