@@ -22,7 +22,9 @@ pool.connect()
     process.exit(1);
   });
 
-const rooms = {}; // Stores room data including the current videoId
+const rooms = {}; // Stores room data
+const activeScreenShares = {}; // Global object to store active screen share per room
+
 
 // Create Room
 app.post("/create_room", async (req, res) => {
@@ -108,7 +110,11 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     io.to(roomId).emit('user-connected', userId);
     console.log(`User ${userId} joined room ${roomId}`);
-    
+
+    if (activeScreenShares[roomId]) {
+      socket.emit("active-screen-share", activeScreenShares[roomId]);
+    }
+
     socket.on("disconnect", () => {
       io.to(roomId).emit('user-disconnected', userId)
       console.log("User disconnected:", socket.id);
@@ -117,19 +123,21 @@ io.on("connection", (socket) => {
 
   // Handle screen share start/stop
   socket.on("screen-share-start", (roomId, sharedUserId) => {
-    console.log(sharedUserId);
+    console.log("Screen share started by:", sharedUserId);
+    activeScreenShares[roomId] = sharedUserId; // Save active screen share info
     socket.to(roomId).emit("screen-share-started", sharedUserId);
   });
   
   socket.on("screen-share-stop", (roomId, sharedUserId) => {
-    console.log(sharedUserId);
+    console.log("Screen share stopped by:", sharedUserId);
+    delete activeScreenShares[roomId];
     socket.to(roomId).emit("screen-share-stopped", sharedUserId);
   });
 
   
-  socket.on("screen-share-stop", (roomId) => {
-    socket.to(roomId).emit("screen-share-stoped", roomId);
-  });
+  // socket.on("screen-share-stop", (roomId) => {
+  //   socket.to(roomId).emit("screen-share-stoped", roomId);
+  // });
 
 });
 
