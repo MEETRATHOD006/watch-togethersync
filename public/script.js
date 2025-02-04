@@ -365,14 +365,6 @@ socket.on("screen-share-stopped", (sharerUserId) => {
     }
   });
 
-  // Listen for photo messages from the server
-  socket.on("receive-photo", ({ sender, photo, timestamp, senderId }) => {
-    if (senderId !== myPeerId) {
-      appendPhotoMessage(sender, photo, timestamp, "not me");
-    }
-  });
-
-
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
 }
