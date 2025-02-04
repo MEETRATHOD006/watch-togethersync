@@ -174,9 +174,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("send-photo", ({ roomId, sender, photo, senderId }) => {
+  socket.on("send-photo", ({ roomId, sender, photoUrl, senderId }) => {
     // Simply broadcast the photo to everyone in the room.
-    io.to(roomId).emit("receive-photo", { sender, photo, timestamp: new Date(), senderId });
+    io.to(roomId).emit("receive-photo", { sender, photoUrl, timestamp: new Date(), senderId });
   });
   
 });
