@@ -314,7 +314,7 @@ socket.on("screen-share-stopped", (sharerUserId) => {
     if (!message) return; // Prevent sending empty messages
 
     // Emit the message to the server
-    socket.emit("send-message", { roomId, sender, message });
+    socket.emit("send-message", { roomId, sender, message, myPeerId });
     
     // Optionally, immediately append the message to the chat (optimistic update)
     appendMessage(sender, message, new Date());
@@ -324,7 +324,10 @@ socket.on("screen-share-stopped", (sharerUserId) => {
   });
 
   // Listen for messages from server
-  socket.on("receive-message", ({ sender, message, timestamp }) => {
+  socket.on("receive-message", ({ sender, message, timestamp, senderId }) => {
+    if (senderId === myPeerId){
+      return
+    }
     appendMessage(sender, message, timestamp);
   });
 
