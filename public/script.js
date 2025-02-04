@@ -380,10 +380,8 @@ function appendMessage(sender, message, timestamp) {
 
   sName.innerText = sender;
   ms.innerText = message;
-  console.log(timestamp);
-  timestamp = timestamp.toString();
-  console.log(timestamp);
-  tm.innerText = timestamp;
+  const time = new Date(timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+  tm.innerText = time;
 
   mDiv.appendChild(sName);
   mDiv.appendChild(ms);
