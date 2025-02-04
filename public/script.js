@@ -319,7 +319,8 @@ socket.on("screen-share-stopped", (sharerUserId) => {
     socket.emit("send-message", { roomId, sender, message, myPeerId });
     
     // Optionally, immediately append the message to the chat (optimistic update)
-    appendMessage(sender, message, new Date());
+    let who = "me"
+    appendMessage(sender, message, new Date(), who);
     
     // Clear the message input
     messageInput.value = "";
@@ -329,7 +330,8 @@ socket.on("screen-share-stopped", (sharerUserId) => {
   socket.on("receive-message", ({ sender, message, timestamp, senderId }) => {
     console.log("after", senderId);
     if (senderId !== myPeerId){
-      appendMessage(sender, message, timestamp);
+      let who = "not me"
+      appendMessage(sender, message, timestamp, who);
     }
   });
 
@@ -381,7 +383,7 @@ function displayNotification(message) {
 }
 
 // Helper function to append a message to the chat
-function appendMessage(sender, message, timestamp) {
+function appendMessage(sender, message, timestamp, who) {
   let mDiv = document.createElement("div");
   let sName = document.createElement("div");
   let ms = document.createElement("div");
@@ -395,6 +397,10 @@ function appendMessage(sender, message, timestamp) {
   ms.innerText = message;
   const time = new Date(timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
   tm.innerText = time;
+
+  if (who === "me") {
+    mDiv.style.alignSelf = "flex-end";
+  }
 
   mDiv.appendChild(sName);
   mDiv.appendChild(ms);
