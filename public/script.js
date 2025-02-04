@@ -314,6 +314,7 @@ socket.on("screen-share-stopped", (sharerUserId) => {
     if (!message) return; // Prevent sending empty messages
 
     console.log("before", myPeerId);
+    console.log(typeof myPeerId);
     // Emit the message to the server
     socket.emit("send-message", { roomId, sender, message, myPeerId });
     
