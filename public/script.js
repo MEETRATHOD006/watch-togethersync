@@ -380,7 +380,7 @@ function appendMessage(sender, message, timestamp) {
 
   sName.innerText = sender;
   ms.innerText = message;
-  tm.innerText = timestamp;
+  tm.innerText = timestamp.toString();
 
   mDiv.appendChild(sName);
   mDiv.appendChild(ms);
