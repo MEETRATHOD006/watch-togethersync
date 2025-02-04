@@ -57,6 +57,7 @@ const roomId = getRoomIdFromURL();
 
 if (roomId) {
   console.log(`Joined room: ${roomId}`);
+  checkOverflow()
 
   // Fetch chat history for the room
   fetch(`/messages/${roomId}`)
@@ -64,6 +65,9 @@ if (roomId) {
     .then(messages => {
       messages.forEach(msg => {
         appendMessage(msg.sender, msg.message, msg.timestamp);
+        // Observe changes to child elements and trigger the check
+        const observer = new MutationObserver(checkOverflow);
+        observer.observe(document.getElementById("mainChat"), { childList: true, subtree: true });
       });
     })
     .catch(err => console.error("Error fetching messages:", err));
@@ -411,6 +415,16 @@ function appendMessage(sender, message, timestamp, who) {
   mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
 }
 
+function checkOverflow() {
+    const mainChat = document.getElementById("mainChat");
+    
+    if (mainChat.scrollHeight > mainChat.clientHeight) {
+        mainChat.style.justifyContent = "unset"; // Remove justification when scroll is active
+        mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
+    } else {
+        mainChat.style.justifyContent = "center"; // Apply justification when no overflow
+    }
+}
 
 // Display Local Video
 // 📌 CREATE ROOM EVENT LISTENER
