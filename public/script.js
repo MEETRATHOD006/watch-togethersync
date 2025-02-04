@@ -388,6 +388,7 @@ function displayNotification(message) {
 
 // Helper function to append a message to the chat
 function appendMessage(sender, message, timestamp, who) {
+  checkOverflow()
   let mDiv = document.createElement("div");
   let sName = document.createElement("div");
   let ms = document.createElement("div");
