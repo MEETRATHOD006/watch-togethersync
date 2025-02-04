@@ -146,10 +146,10 @@ io.on("connection", (socket) => {
   });
 
   // Chat functionality
-  socket.on("send-message", async ({ roomId, sender, message }) => {
+  socket.on("send-message", async ({ roomId, sender, message, senderId }) => {
     try {
       await pool.query("INSERT INTO messages (room_id, sender, message) VALUES ($1, $2, $3)", [roomId, sender, message]);
-      io.to(roomId).emit("receive-message", { sender, message, timestamp: new Date() });
+      io.to(roomId).emit("receive-message", { sender, message, timestamp: new Date(), senderId });
     } catch (err) {
       console.error("Failed to save message:", err.message);
     }
