@@ -547,11 +547,8 @@ li:hover #setting {
 }
 
 #sendbtn {
-    width: 24%;
-    position: absolute;
-    bottom: 0;
-    right: 5px;
-    height: 12.5%;
+    width: 100%;
+    height: 50%;
     outline: none;
     border-radius: 5px;
     border: 1px solid #4CAF50;
@@ -595,4 +592,26 @@ li:hover #setting {
     text-align: right;
     font-size: 11px;
     color: darkgrey;
+}
+
+#spBtnsContainer {
+    width: 24%;
+    height: 12.5%;
+    position: absolute;
+    bottom: 0;
+    right: 5px;
+    display: flex
+;
+    flex-direction: column;
+    gap: 5px;
+}
+#sendPhotoBtn {
+    width: 100%;
+    height: 50%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #c32b2b;
+    background-color: #c32b2b;
+    color: white;
+    font-size: 20px;
 }
