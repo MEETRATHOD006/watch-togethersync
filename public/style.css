@@ -181,7 +181,7 @@ header {
     height: 100%;
     width: 30px;
     display: flex;
-    background-color: rgba(117, 117, 117, 0.342);
+/*     background-color: rgba(117, 117, 117, 0.342); */
     align-items: center;
     justify-content: center;
 }
