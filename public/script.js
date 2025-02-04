@@ -313,6 +313,7 @@ socket.on("screen-share-stopped", (sharerUserId) => {
     const message = messageInput.value.trim();
     if (!message) return; // Prevent sending empty messages
 
+    console.log("before", myPeerId);
     // Emit the message to the server
     socket.emit("send-message", { roomId, sender, message, myPeerId });
     
@@ -325,6 +326,7 @@ socket.on("screen-share-stopped", (sharerUserId) => {
 
   // Listen for messages from server
   socket.on("receive-message", ({ sender, message, timestamp, senderId }) => {
+    console.log("after", senderId);
     if (senderId !== myPeerId){
       appendMessage(sender, message, timestamp);
     }
