@@ -364,7 +364,9 @@ socket.on("screen-share-stopped", (sharerUserId) => {
         .then(data => {
             const sender = senderNameInput.value.trim() || "Anonymous";
             socket.emit("send-photo", { roomId, sender, photoUrl: data.url, senderId: myPeerId });
-            appendPhotoMessage(sender, data.url, new Date(), "me");
+            let who = "me";
+            let photoUrl = data.url;
+            appendPhotoMessage(sender, photoUrl, new Date(), who);
         })
         .catch(error => console.error("Error uploading photo:", error));
     }
@@ -372,9 +374,9 @@ socket.on("screen-share-stopped", (sharerUserId) => {
 
 
   // Listen for photo messages from the server
-  socket.on("receive-photo", ({ sender, photo, timestamp, senderId }) => {
+  socket.on("receive-photo", ({ sender, photoUrl, timestamp, senderId }) => {
     if (senderId !== myPeerId) {
-      appendPhotoMessage(sender, photo, timestamp, "not me");
+      appendPhotoMessage(sender, photoUrl, timestamp, "not me");
     }
   });
 
@@ -463,7 +465,7 @@ function appendMessage(sender, message, timestamp, who) {
 }
 
 // Helper function to append a photo message to the chat
-function appendPhotoMessage(sender, photo, timestamp, who) {
+function appendPhotoMessage(sender, photoUrl, timestamp, who) {
   const mDiv = document.createElement("div");
   const sName = document.createElement("div");
   const img = document.createElement("img");
@@ -475,7 +477,7 @@ function appendPhotoMessage(sender, photo, timestamp, who) {
 
   sName.innerText = sender;
   // Set the image source to the photo data URL
-  img.src = photo;
+  img.src = photoUrl;
   // Optional: Style the image (e.g., max width, border radius)
   img.style.maxWidth = "100%";
   img.style.borderRadius = "5px";
