@@ -64,9 +64,6 @@ if (roomId) {
     .then(messages => {
       messages.forEach(msg => {
         appendMessage(msg.sender, msg.message, msg.timestamp);
-        // Observe changes to child elements and trigger the check
-        const observer = new MutationObserver(checkOverflow);
-        observer.observe(document.getElementById("mainChat"), { childList: true, subtree: true });
       });
     })
     .catch(err => console.error("Error fetching messages:", err));
@@ -387,7 +384,6 @@ function displayNotification(message) {
 
 // Helper function to append a message to the chat
 function appendMessage(sender, message, timestamp, who) {
-  checkOverflow()
   let mDiv = document.createElement("div");
   let sName = document.createElement("div");
   let ms = document.createElement("div");
