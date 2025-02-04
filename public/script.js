@@ -409,20 +409,6 @@ function appendMessage(sender, message, timestamp, who) {
   
   // Auto-scroll to the bottom
   mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
-  updateChatLayout()
-}
-
-// Helper function to check for overflow and update justify-content
-function updateChatLayout() {
-  const mainChat = document.getElementById("mainChat");
-  
-  // Check if the content overflows vertically
-  // Option 1: Using offsetHeight
-  if (Math.abs(mainChat.scrollHeight - mainChat.offsetHeight) > 0) {
-    mainChat.style.justifyContent = 'unset';
-  } else {
-    mainChat.style.justifyContent = 'end';
-  }
 }
 
 // Display Local Video
