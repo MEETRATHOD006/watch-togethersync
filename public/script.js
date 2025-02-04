@@ -325,10 +325,9 @@ socket.on("screen-share-stopped", (sharerUserId) => {
 
   // Listen for messages from server
   socket.on("receive-message", ({ sender, message, timestamp, senderId }) => {
-    if (senderId === myPeerId){
-      return
+    if (senderId !== myPeerId){
+      appendMessage(sender, message, timestamp);
     }
-    appendMessage(sender, message, timestamp);
   });
 
 
