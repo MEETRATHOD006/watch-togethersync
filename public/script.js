@@ -414,17 +414,21 @@ function appendMessage(sender, message, timestamp, who) {
   
   // Auto-scroll to the bottom
   mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
+  updateChatLayout()
 }
 
-function checkOverflow() {
-    const mainChat = document.getElementById("mainChat");
-    
-    if (mainChat.scrollHeight > mainChat.clientHeight) {
-        mainChat.style.justifyContent = "unset"; // Remove justification when scroll is active
-        mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
-    } else {
-        mainChat.style.justifyContent = "end"; // Apply justification when no overflow
-    }
+// Helper function to check for overflow and update justify-content
+function updateChatLayout() {
+  const mainChat = document.getElementById("mainChat");
+  
+  // Check if the content overflows vertically
+  if (mainChat.scrollHeight > mainChat.clientHeight) {
+    // Remove justify-content if overflow is present.
+    mainChat.style.justifyContent = 'unset';
+  } else {
+    // Otherwise, center the content.
+    mainChat.style.justifyContent = 'end';
+  }
 }
 
 // Display Local Video
