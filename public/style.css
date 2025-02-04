@@ -182,6 +182,7 @@ header {
     width: 30px;
     display: flex;
 /*     background-color: rgba(117, 117, 117, 0.342); */
+    border: 2px solid orange;
     align-items: center;
     justify-content: center;
 }
@@ -195,13 +196,13 @@ header {
 }
 
 #displayvideocalls {
-    /* border: 1px solid red; */
     width: 100%;
     height: calc(100% - 33px);
     display: grid;
     grid-auto-rows: 150px;
     grid-template-columns: repeat(auto-fill, 150px);
     gap: 22px;
+    padding-top: 5px;
 }
 
 .individualsVideo {
