@@ -508,10 +508,13 @@ li:hover #setting {
 #mainChat {
     height: calc(91%);
     display: flex;
-    justify-content: end;
     align-items: flex-end;
     flex-direction: column;
-/*     border: 1px solid red; */
+    overflow: scroll;
+}
+
+#mainChat::-webkit-scrollbar {
+    display: none;
 }
 
 #senderName {
