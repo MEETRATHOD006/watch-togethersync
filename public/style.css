@@ -583,3 +583,9 @@ li:hover #setting {
     font-family: system-ui;
     font-size: 18px;
 }
+
+.tm {
+    text-align: right;
+    font-size: 11px;
+    color: darkgrey;
+}
