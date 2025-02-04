@@ -369,25 +369,22 @@ function displayNotification(message) {
 
 // Helper function to append a message to the chat
 function appendMessage(sender, message, timestamp) {
-  // const messageDiv = document.createElement("div");
-  // messageDiv.classList.add("chat-message");
-  // // Format the timestamp (optional)
-  // const time = new Date(timestamp).toLocaleTimeString();
-  // messageDiv.innerHTML = `<strong>${sender}</strong> [${time}]: ${message}`;
-  // mainChatDiv.appendChild(messageDiv);
-
   let mDiv = document.createElement("div");
   let sName = document.createElement("div");
   let ms = document.createElement("div");
+  let tm = document.createElement("div")
   mDiv.classList.add("msgs");
   sName.classList.add("sender_name");
   ms.classList.add("ms");
+  tm.classList.add("tm");
 
   sName.innerText = sender;
   ms.innerText = message;
+  tm.innerText = timestamp;
 
   mDiv.appendChild(sName);
   mDiv.appendChild(ms);
+  mDiv.appendChind(tm);
   mainChatDiv.appendChild(mDiv);
   
   // Auto-scroll to the bottom
