@@ -15,6 +15,8 @@ const mainChatDiv = document.getElementById("mainChat");
 const senderNameInput = document.getElementById("senderName");
 const messageInput = document.getElementById("message");
 const sendBtn = document.getElementById("sendbtn");
+const photoInput = document.getElementById("photoInput");
+const sendPhotoBtn = document.getElementById("sendPhotoBtn");
 
 videoCallsbtn.addEventListener("click", () => {
   console.log("videoCall clicked");
@@ -326,12 +328,47 @@ socket.on("screen-share-stopped", (sharerUserId) => {
     messageInput.value = "";
   });
 
+  sendPhotoBtn.addEventListener("click", () => {
+  photoInput.click();
+});
+
+  // When a file is selected...
+  photoInput.addEventListener("change", function() {
+    if (photoInput.files && photoInput.files[0]) {
+      const file = photoInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const sender = senderNameInput.value.trim() || 'Anonymous';
+        const photoDataUrl = e.target.result; // Base64 encoded image data
+        // Emit the photo to the server along with the room and sender info.
+        socket.emit("send-photo", { roomId, sender, photo: photoDataUrl, senderId: myPeerId });
+        // Optionally, display the photo locally (optimistic update)
+        appendPhotoMessage(sender, photoDataUrl, new Date(), "me");
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Listen for photo messages from the server
+  socket.on("receive-photo", ({ sender, photo, timestamp, senderId }) => {
+    if (senderId !== myPeerId) {
+      appendPhotoMessage(sender, photo, timestamp, "not me");
+    }
+  });
+
   // Listen for messages from server
   socket.on("receive-message", ({ sender, message, timestamp, senderId }) => {
     console.log("after", senderId);
     if (senderId !== myPeerId){
       let who = "not me"
       appendMessage(sender, message, timestamp, who);
+    }
+  });
+
+  // Listen for photo messages from the server
+  socket.on("receive-photo", ({ sender, photo, timestamp, senderId }) => {
+    if (senderId !== myPeerId) {
+      appendPhotoMessage(sender, photo, timestamp, "not me");
     }
   });
 
@@ -408,6 +445,39 @@ function appendMessage(sender, message, timestamp, who) {
   mainChatDiv.appendChild(mDiv);
   
   // Auto-scroll to the bottom
+  mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
+}
+
+// Helper function to append a photo message to the chat
+function appendPhotoMessage(sender, photo, timestamp, who) {
+  const mDiv = document.createElement("div");
+  const sName = document.createElement("div");
+  const img = document.createElement("img");
+  const tm = document.createElement("div");
+
+  mDiv.classList.add("msgs");
+  sName.classList.add("sender_name");
+  tm.classList.add("tm");
+
+  sName.innerText = sender;
+  // Set the image source to the photo data URL
+  img.src = photo;
+  // Optional: Style the image (e.g., max width, border radius)
+  img.style.maxWidth = "100%";
+  img.style.borderRadius = "5px";
+  // Format the timestamp as "5:10 PM"
+  const time = new Date(timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+  tm.innerText = time;
+
+  // Align your own messages to the right
+  if (who === "me") {
+    mDiv.style.alignSelf = "flex-end";
+  }
+
+  mDiv.appendChild(sName);
+  mDiv.appendChild(img);
+  mDiv.appendChild(tm);
+  mainChatDiv.appendChild(mDiv);
   mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
 }
 
