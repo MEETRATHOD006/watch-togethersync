@@ -57,7 +57,6 @@ const roomId = getRoomIdFromURL();
 
 if (roomId) {
   console.log(`Joined room: ${roomId}`);
-  checkOverflow()
 
   // Fetch chat history for the room
   fetch(`/messages/${roomId}`)
