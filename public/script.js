@@ -417,8 +417,8 @@ function updateChatLayout() {
   const mainChat = document.getElementById("mainChat");
   
   // Check if the content overflows vertically
-  const computedHeight = parseInt(window.getComputedStyle(mainChat).height, 10);
-  if (mainChat.scrollHeight - computedHeight > 0) {
+  // Option 1: Using offsetHeight
+  if (Math.abs(mainChat.scrollHeight - mainChat.offsetHeight) > 0) {
     mainChat.style.justifyContent = 'unset';
   } else {
     mainChat.style.justifyContent = 'end';
