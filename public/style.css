@@ -181,8 +181,7 @@ header {
     height: 100%;
     width: 30px;
     display: flex;
-/*     background-color: rgba(117, 117, 117, 0.342); */
-    border: 2px solid orange;
+    border-bottom: 2px solid orange;
     align-items: center;
     justify-content: center;
 }
@@ -504,14 +503,16 @@ li:hover #setting {
     flex-direction: column;
     gap: 10px;
     position: relative;
+    padding: 0px 10px 0px 10px;
+    box-sizing: border-box;
 }
 
 #mainChat {
     height: calc(91%);
     display: flex;
-    align-items: flex-end;
     flex-direction: column;
     overflow: scroll;
+    gap: 5px;
 }
 
 #mainChat::-webkit-scrollbar {
@@ -545,7 +546,7 @@ li:hover #setting {
     width: 24%;
     position: absolute;
     bottom: 0;
-    right: 0;
+    right: 5;
     height: 12.5%;
     outline: none;
     border-radius: 5px;
@@ -565,7 +566,6 @@ li:hover #setting {
     max-width: 70%;
     background-color: rgb(54 58 63);
     border-radius: 5px;
-    margin: 0px 5px 5px 0px;
     color: white;
     padding: 5px;
 }
