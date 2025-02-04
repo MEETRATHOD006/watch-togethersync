@@ -422,7 +422,7 @@ function checkOverflow() {
         mainChat.style.justifyContent = "unset"; // Remove justification when scroll is active
         mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
     } else {
-        mainChat.style.justifyContent = "center"; // Apply justification when no overflow
+        mainChat.style.justifyContent = "end"; // Apply justification when no overflow
     }
 }
 
