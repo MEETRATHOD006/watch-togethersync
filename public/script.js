@@ -21,7 +21,7 @@ videoCallsbtn.addEventListener("click", () => {
   displayvideocallsDiv.style.display = 'grid';
   chatsHereDiv.style.display = 'none';
   videoCallsbtn.style.backgroundColor = 'rgba(117, 117, 117, 0.342)';
-  chatsbtn.style.backgroundColor = 'none';
+  chatsbtn.style.backgroundColor = 'rgba(0, 0, 0, 0)';
 });
 
 chatsbtn.addEventListener("click", () => {
@@ -30,7 +30,7 @@ chatsbtn.addEventListener("click", () => {
   displayvideocallsDiv.style.display = 'none';
   mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
   chatsbtn.style.backgroundColor = 'rgba(117, 117, 117, 0.342)';
-  videoCallsbtn.style.backgroundColor = 'none';
+  videoCallsbtn.style.backgroundColor = 'rgba(0, 0, 0, 0)';
 });
 
 // Connection established
