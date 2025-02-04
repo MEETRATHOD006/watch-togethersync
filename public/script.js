@@ -333,23 +333,43 @@ socket.on("screen-share-stopped", (sharerUserId) => {
 });
 
   // When a file is selected...
+  // photoInput.addEventListener("change", function() {
+  //   if (photoInput.files && photoInput.files[0]) {
+  //     resizeImage(photoInput.files[0], function(resizedImage) {
+  //       const file = photoInput.files[0];
+  //       const reader = new FileReader();
+  //       reader.onload = function(e) {
+  //         const sender = senderNameInput.value.trim() || 'Anonymous';
+  //         const photoDataUrl = e.target.result; // Base64 encoded image data
+  //         // Emit the photo to the server along with the room and sender info.
+  //         socket.emit("send-photo", { roomId, sender, photo: photoDataUrl, senderId: myPeerId });
+  //         // Optionally, display the photo locally (optimistic update)
+  //         appendPhotoMessage(sender, photoDataUrl, new Date(), "me");
+  //       };
+  //       reader.readAsDataURL(file);
+  //     });
+  //   }
+  // });
+
   photoInput.addEventListener("change", function() {
     if (photoInput.files && photoInput.files[0]) {
-      resizeImage(photoInput.files[0], function(resizedImage) {
-        const file = photoInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const sender = senderNameInput.value.trim() || 'Anonymous';
-          const photoDataUrl = e.target.result; // Base64 encoded image data
-          // Emit the photo to the server along with the room and sender info.
-          socket.emit("send-photo", { roomId, sender, photo: photoDataUrl, senderId: myPeerId });
-          // Optionally, display the photo locally (optimistic update)
-          appendPhotoMessage(sender, photoDataUrl, new Date(), "me");
-        };
-        reader.readAsDataURL(file);
-      });
+        const formData = new FormData();
+        formData.append("photo", photoInput.files[0]);
+
+        fetch("/upload-photo", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const sender = senderNameInput.value.trim() || "Anonymous";
+            socket.emit("send-photo", { roomId, sender, photoUrl: data.url, senderId: myPeerId });
+            appendPhotoMessage(sender, data.url, new Date(), "me");
+        })
+        .catch(error => console.error("Error uploading photo:", error));
     }
   });
+
 
   // Listen for photo messages from the server
   socket.on("receive-photo", ({ sender, photo, timestamp, senderId }) => {
@@ -473,25 +493,6 @@ function appendPhotoMessage(sender, photo, timestamp, who) {
   mDiv.appendChild(tm);
   mainChatDiv.appendChild(mDiv);
   mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
-}
-
-function resizeImage(file, callback) {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function(event) {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = function() {
-            const canvas = document.createElement("canvas");
-            const maxWidth = 800; // Adjust the max width as needed
-            const scaleSize = maxWidth / img.width;
-            canvas.width = maxWidth;
-            canvas.height = img.height * scaleSize;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            callback(canvas.toDataURL("image/jpeg", 0.7)); // Compress & Convert to JPEG
-        };
-    };
 }
 
 // Display Local Video
