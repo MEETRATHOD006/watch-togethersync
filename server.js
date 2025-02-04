@@ -79,6 +79,17 @@ app.post("/join_room", async (req, res) => {
   }
 });
 
+// Fetch chat messages for a room
+app.get("/messages/:room_id", async (req, res) => {
+  const { room_id } = req.params;
+  try {
+    const result = await pool.query("SELECT * FROM messages WHERE room_id = $1 ORDER BY timestamp ASC", [room_id]);
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Failed to fetch messages:", err.message);
+    res.status(500).json({ error: "Failed to fetch messages" });
+  }
+});
 
 // Handle Room Routes
 app.get("/:room", async (req, res) => {
@@ -134,6 +145,15 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("screen-share-stopped", sharedUserId);
   });
 
+  // Chat functionality
+  socket.on("send-message", async ({ roomId, sender, message }) => {
+    try {
+      await pool.query("INSERT INTO messages (room_id, sender, message) VALUES ($1, $2, $3)", [roomId, sender, message]);
+      io.to(roomId).emit("receive-message", { sender, message, timestamp: new Date() });
+    } catch (err) {
+      console.error("Failed to save message:", err.message);
+    }
+  });
   
   // socket.on("screen-share-stop", (roomId) => {
   //   socket.to(roomId).emit("screen-share-stoped", roomId);
