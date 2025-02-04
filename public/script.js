@@ -417,12 +417,11 @@ function updateChatLayout() {
   const mainChat = document.getElementById("mainChat");
   
   // Check if the content overflows vertically
-  if (mainChat.scrollHeight > mainChat.clientHeight) {
-    // Remove justify-content if overflow is present.
-    mainChat.style.justifyContent = 'unset';
+  const computedHeight = parseInt(window.getComputedStyle(mainChat).height, 10);
+  if (mainChat.scrollHeight - computedHeight > 0) {
+    mainChat.style.justifyContent = 'flex-start';
   } else {
-    // Otherwise, center the content.
-    mainChat.style.justifyContent = 'end';
+    mainChat.style.justifyContent = 'center';
   }
 }
 
