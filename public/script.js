@@ -26,6 +26,7 @@ chatsbtn.addEventListener("click", () => {
   console.log("chats clicked");
   chatsHereDiv.style.display = 'flex';
   displayvideocallsDiv.style.display = 'none';
+  mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
 });
 
 // Connection established
