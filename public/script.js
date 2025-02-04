@@ -11,6 +11,10 @@ const videoCallsbtn = document.getElementById("videocalls");
 const chatsbtn = document.getElementById("chats");
 const displayvideocallsDiv = document.getElementById("displayvideocalls");
 const chatsHereDiv = document.getElementById("chatsHere");
+const mainChatDiv = document.getElementById("mainChat");
+const senderNameInput = document.getElementById("senderName");
+const messageInput = document.getElementById("message");
+const sendBtn = document.getElementById("sendbtn");
 
 videoCallsbtn.addEventListener("click", () => {
   console.log("videoCall clicked");
@@ -44,6 +48,16 @@ const roomId = getRoomIdFromURL();
 
 if (roomId) {
   console.log(`Joined room: ${roomId}`);
+
+  // Fetch chat history for the room
+  fetch(`/messages/${roomId}`)
+    .then(response => response.json())
+    .then(messages => {
+      messages.forEach(msg => {
+        appendMessage(msg.sender, msg.message, msg.timestamp);
+      });
+    })
+    .catch(err => console.error("Error fetching messages:", err));
 
   
   // Emit join room event
@@ -282,6 +296,29 @@ socket.on("screen-share-stopped", (sharerUserId) => {
   stopScreenShareBtn.disabled = true;
 });
 
+  // *** Chat Functionality ***
+
+  // Send message event listener
+  sendBtn.addEventListener("click", () => {
+    const sender = senderNameInput.value.trim() || 'Anonymous';
+    const message = messageInput.value.trim();
+    if (!message) return; // Prevent sending empty messages
+
+    // Emit the message to the server
+    socket.emit("send-message", { roomId, sender, message });
+    
+    // Optionally, immediately append the message to the chat (optimistic update)
+    appendMessage(sender, message, new Date());
+    
+    // Clear the message input
+    messageInput.value = "";
+  });
+
+  // Listen for messages from server
+  socket.on("receive-message", ({ sender, message, timestamp }) => {
+    appendMessage(sender, message, timestamp);
+  });
+
 
 } else {
   console.log("No room detected in the URL. Displaying default interface.");
@@ -327,6 +364,18 @@ function displayNotification(message) {
   notification.style.borderRadius = "5px";
   document.body.appendChild(notification);
   setTimeout(() => notification.remove(), 3000);
+}
+
+// Helper function to append a message to the chat
+function appendMessage(sender, message, timestamp) {
+  const messageDiv = document.createElement("div");
+  messageDiv.classList.add("chat-message");
+  // Format the timestamp (optional)
+  const time = new Date(timestamp).toLocaleTimeString();
+  messageDiv.innerHTML = `<strong>${sender}</strong> [${time}]: ${message}`;
+  mainChatDiv.appendChild(messageDiv);
+  // Auto-scroll to the bottom
+  mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
 }
 
 
