@@ -156,11 +156,12 @@ io.on("connection", (socket) => {
       console.error("Failed to save message:", err.message);
     }
   });
-  
-  // socket.on("screen-share-stop", (roomId) => {
-  //   socket.to(roomId).emit("screen-share-stoped", roomId);
-  // });
 
+  socket.on("send-photo", ({ roomId, sender, photo, senderId }) => {
+    // Simply broadcast the photo to everyone in the room.
+    io.to(roomId).emit("receive-photo", { sender, photo, timestamp: new Date(), senderId });
+  });
+  
 });
 
 
