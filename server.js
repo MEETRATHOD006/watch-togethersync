@@ -150,7 +150,7 @@ io.on("connection", (socket) => {
     try {
       await pool.query("INSERT INTO messages (room_id, sender, message) VALUES ($1, $2, $3)", [roomId, sender, message]);
       console.log("server side:", myPeerId);
-      let senderId = senderId;
+      let senderId = myPeerId;
       io.to(roomId).emit("receive-message", { sender, message, timestamp: new Date(), senderId });
     } catch (err) {
       console.error("Failed to save message:", err.message);
