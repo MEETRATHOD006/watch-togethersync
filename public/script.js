@@ -385,7 +385,7 @@ function appendMessage(sender, message, timestamp) {
 
   mDiv.appendChild(sName);
   mDiv.appendChild(ms);
-  mDiv.appendChind(tm);
+  mDiv.appendChild(tm);
   mainChatDiv.appendChild(mDiv);
   
   // Auto-scroll to the bottom
