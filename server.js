@@ -3,6 +3,7 @@ const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 const { Pool } = require("pg");
+const multer = require("multer");
 const path = require("path");
 const { PeerServer } = require('peer'); 
 
@@ -21,6 +22,16 @@ pool.connect()
     console.error("Database connection failed:", err.message);
     process.exit(1);
   });
+
+// Set up storage for file uploads
+const storage = multer.diskStorage({
+    destination: "public/uploads/",
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage });
 
 const rooms = {}; // Stores room data
 const activeScreenShares = {}; // Global object to store active screen share per room
@@ -106,6 +117,12 @@ app.get("/:room", async (req, res) => {
     console.error("Failed to load room:", err.message);
     res.status(500).send("Internal server error.");
   }
+});
+
+// Handle photo upload
+app.post("/upload-photo", upload.single("photo"), (req, res) => {
+    if (!req.file) return res.status(400).send("No file uploaded.");
+    res.json({ url: "/uploads/" + req.file.filename });
 });
 
 io.on("connection", (socket) => {
