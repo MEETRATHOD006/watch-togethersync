@@ -486,7 +486,6 @@ li:hover #setting {
 #mute {
     height: 100%;
     width: 30px;
-    background-color: rgba(117, 117, 117, 0.342);
     display: flex;
     align-items: center;
     justify-content: center;
