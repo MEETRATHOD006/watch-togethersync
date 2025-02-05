@@ -305,6 +305,13 @@ startScreenShareBtn.addEventListener("click", () => {
       screenVideo.autoplay = true;
       screenVideo.muted = true;
       videoElement.appendChild(screenVideo);
+
+      // **Update your own preview video in individualsVideo div**
+      const myVideoElement = document.querySelector(`.individualsVideo[data-user-id="${myPeerId}"] video`);
+      if (myVideoElement) {
+        myVideoElement.srcObject = screenStream;
+      }
+      
       startScreenShareBtn.disabled = true;
       stopScreenShareBtn.disabled = false;
       
