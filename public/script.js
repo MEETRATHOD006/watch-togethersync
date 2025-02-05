@@ -5,6 +5,7 @@ const peers = {}; // Store peer connections
 let myPeerId = null;  // Store the peer ID
 let localStream; // Store the local video stream
 let isScreenSharing = false; // Flag to check screen sharing status
+let currentScreenStream;
 const startScreenShareBtn = document.getElementById("startScreenShare");
 const stopScreenShareBtn = document.getElementById("stopScreenShare");
 const videoCallsbtn = document.getElementById("videocalls");
@@ -109,7 +110,11 @@ if (roomId) {
   
 
     myPeer.on('call', call => {
-      call.answer(stream)
+      if (isScreenSharing && currentScreenStream) {
+        call.answer(currentScreenStream);
+      } else {
+        call.answer(localStream);
+      }
       const video = document.createElement('video')
       call.on('stream', userVideoStream => {
         const remoteUserId = call.peer || "unknown";
@@ -276,6 +281,7 @@ startScreenShareBtn.addEventListener("click", () => {
   navigator.mediaDevices.getDisplayMedia({ video: true, audio: false })
     .then((screenStream) => {
       isScreenSharing = true;
+      currentScreenStream = screenStream;
       const screenTrack = screenStream.getVideoTracks()[0];
 
       // Replace video track in all existing connections
