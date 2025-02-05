@@ -235,7 +235,7 @@ if (roomId) {
   socket.on("user-unmuted", (roomId, userPeerId) => {
     if (userPeerId !== myPeerId) {
       let muteV = document.querySelector(`.individualsVideo[data-user-id="${userPeerId}"] video`);
-      muteV.muted false;
+      muteV.muted = false;
     }
   });
   
