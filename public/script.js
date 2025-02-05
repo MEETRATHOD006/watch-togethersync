@@ -246,7 +246,7 @@ if (roomId) {
   socket.on("camera-turn-oned", (roomId, userPeerId) => {
     let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${userPeerId}"]`);
     hideVimg.style.display = 'none'
-  };
+  });
 startScreenShareBtn.addEventListener("click", () => {
   if (isScreenSharing) return;
 
