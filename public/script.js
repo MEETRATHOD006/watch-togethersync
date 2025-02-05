@@ -203,7 +203,7 @@ if (roomId) {
       const blankProfilePic = document.createElement('img');
       blankProfilePic.classList.add("blankProfilePic");
       blankProfilePic.src = "/blank-profile-picture.webp"
-      blankProfilePic .setAttribute("data-user-id", userId);
+      blankProfilePic .setAttribute("data-user-id", myPeerId);
       individualsVideo.append(blankProfilePic)
     }
   }
