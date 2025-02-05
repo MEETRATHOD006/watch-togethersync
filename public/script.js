@@ -218,11 +218,11 @@ if (roomId) {
   hideV.addEventListener("click", () => {
     console.log("hideV clicked");
     if (hideV.className === "on"){
-      hideV.innerHTML = `<i class="fa-solid fa-camera-slash"></i>`
+      hideV.innerHTML = `<span class="mdi mdi-camera-off"></span>`
       hideV.classList.remove("on");
       hideV.classList.add("off");
     } else {
-      hideV.innerHTML = `<i class="fa-solid fa-camera"></i>`
+      hideV.innerHTML = `<span class="mdi mdi-camera"></span>`
       hideV.classList.remove("off");
       hideV.classList.add("on");
     }
