@@ -115,7 +115,7 @@ if (roomId) {
         call.answer(currentScreenStream);
       } else {
         console.log("no screen sharing", localStream, currentScreenStream);
-        call.answer(stream);
+        call.answer(localStream);
       }
       const video = document.createElement('video')
       call.on('stream', userVideoStream => {
@@ -169,22 +169,24 @@ if (roomId) {
   })
 
   function connectToNewUser(userId, stream){
-    const call = myPeer.call(userId, stream);
+    // Use currentScreenStream if screen sharing is active, otherwise use the local camera stream.
+    const outgoingStream = (isScreenSharing && currentScreenStream) ? currentScreenStream : stream;
+    const call = myPeer.call(userId, outgoingStream);
     const video = document.createElement('video');
     call.on("stream", userVideoStream => {
       addVideoStream(video, userVideoStream, userId);
-    })
+    });
     call.on('close', () => {
-       const individualsVideo = document.querySelector(`.individualsVideo[data-user-id="${userId}"]`);
+      const individualsVideo = document.querySelector(`.individualsVideo[data-user-id="${userId}"]`);
       if (individualsVideo) {
         individualsVideo.remove();
       }
-      video.remove()
-    })
-
-    peers[userId] = call
+      video.remove();
+    });
+    peers[userId] = call;
     console.log(peers);
   }
+
   
   function addVideoStream(video, stream, userId = myPeerId) {
 
