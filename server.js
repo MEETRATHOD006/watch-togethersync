@@ -162,6 +162,16 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("screen-share-stopped", sharedUserId);
   });
 
+  socket.on("camera-turn-off", (roomId, myPeerId) => {
+    let userPeerId = myPeerId;
+    io.to(roomId).emit("camera-turn-offed", roomId, userPeerId);
+  })
+  
+  socket.on("camera-turn-on", (roomId, myPeerId) => {
+    let userPeerId = myPeerId;
+    io.to(roomId).emit("camera-turn-oned", roomId, userPeerId);
+  })
+
   // Chat functionality
   socket.on("send-message", async ({ roomId, sender, message, myPeerId }) => {
     try {
@@ -187,7 +197,6 @@ io.on("connection", (socket) => {
       console.error("Failed to save photo message:", err.message);
     }
   });
-
   
 });
 
