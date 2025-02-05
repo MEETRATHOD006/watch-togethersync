@@ -174,9 +174,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("send-photo", ({ roomId, sender, photoUrl, senderId, message }) => {
+  socket.on("send-photo", async ({ roomId, sender, photoUrl, senderId, message }) => {
     try {
-    // Save the photo message into the database
+      // Save the photo message into the database
       await pool.query(
         "INSERT INTO messages (room_id, sender, message, photo_url) VALUES ($1, $2, $3, $4)",
         [roomId, sender, message, photoUrl]
@@ -187,6 +187,7 @@ io.on("connection", (socket) => {
       console.error("Failed to save photo message:", err.message);
     }
   });
+
   
 });
 
