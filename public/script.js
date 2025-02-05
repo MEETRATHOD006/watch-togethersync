@@ -62,13 +62,18 @@ if (roomId) {
 
   // Fetch chat history for the room
   fetch(`/messages/${roomId}`)
-    .then(response => response.json())
-    .then(messages => {
-      messages.forEach(msg => {
-        appendMessage(msg.sender, msg.message, msg.timestamp);
-      });
-    })
-    .catch(err => console.error("Error fetching messages:", err));
+  .then(response => response.json())
+  .then(messages => {
+    messages.forEach(msg => {
+      if (msg.photo_url) {
+        // If a photo URL exists, use the photo appending function.
+        appendPhotoMessage(msg.sender, msg.photo_url, msg.timestamp, "not me", msg.message);
+      } else {
+        appendMessage(msg.sender, msg.message, msg.timestamp, "not me");
+      }
+    });
+  })
+  .catch(err => console.error("Error fetching messages:", err));
 
   
   // Emit join room event
