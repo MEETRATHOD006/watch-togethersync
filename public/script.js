@@ -355,9 +355,11 @@ socket.on("screen-share-stopped", (sharerUserId) => {
         .then(data => {
             const sender = senderNameInput.value.trim() || "Anonymous";
             const message = messageInput.value.trim();
+            console.log("send photo with message :", message);
             socket.emit("send-photo", { roomId, sender, photoUrl: data.url, senderId: myPeerId, message });
             let who = "me";
             let photoUrl = data.url;
+            console.log("local photo with message:", message);
             appendPhotoMessage(sender, photoUrl, new Date(), who, message);
         })
         .catch(error => console.error("Error uploading photo:", error));
@@ -368,6 +370,7 @@ socket.on("screen-share-stopped", (sharerUserId) => {
   // Listen for photo messages from the server
   socket.on("receive-photo", ({ sender, photoUrl, timestamp, senderId, message }) => {
     if (senderId !== myPeerId) {
+      console.log("client revies photo with message", message);
       appendPhotoMessage(sender, photoUrl, timestamp, "not me", message);
     }
   });
@@ -458,6 +461,7 @@ function appendMessage(sender, message, timestamp, who) {
 
 // Helper function to append a photo message to the chat
 function appendPhotoMessage(sender, photoUrl, timestamp, who, message) {
+  console.log("photo with message at final destination:", message)
   const mDiv = document.createElement("div");
   const sName = document.createElement("div");
   let ms = document.createElement("div");
