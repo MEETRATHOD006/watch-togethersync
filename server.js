@@ -162,6 +162,16 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("screen-share-stopped", sharedUserId);
   });
 
+  socket.on("mute-user", (roomId, myPeerId) => {
+    let userPeerId = myPeerId;
+    io.to(roomId).emit("user-muted", roomId, userPeerId);
+  })
+
+  socket.on("unmute-user", (roomId, myPeerId) => {
+    let userPeerId = myPeerId;
+    io.to(roomId).emit("user-unmuted", roomId, userPeerId); 
+  })
+
   socket.on("camera-turn-off", (roomId, myPeerId) => {
     let userPeerId = myPeerId;
     io.to(roomId).emit("camera-turn-offed", roomId, userPeerId);
