@@ -209,8 +209,7 @@ if (roomId) {
       muteMe.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`
       muteMe.classList.remove("on");
       muteMe.classList.add("off");
-    }
-    if (muteMe.className === "off"){
+    } else {
       muteMe.innerHTML = `<i class="fa-solid fa-volume-high"></i>`
       muteMe.classList.remove("off");
       muteMe.classList.add("on");
@@ -222,8 +221,7 @@ if (roomId) {
       hideV.innerHTML = `<i class="fa-solid fa-camera-slash"></i>`
       hideV.classList.remove("on");
       hideV.classList.add("off");
-    }
-    if (hideV.className === "off"){
+    } else {
       hideV.innerHTML = `<i class="fa-solid fa-camera"></i>`
       hideV.classList.remove("off");
       hideV.classList.add("on");
