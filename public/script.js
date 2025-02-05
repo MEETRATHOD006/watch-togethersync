@@ -228,15 +228,25 @@ if (roomId) {
       hideV.classList.add("off");
       let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${myPeerId}"]`);
       hideVimg.style.display = 'block'
+      socket.emit("camera-turn-off", roomId, myPeerId);
     } else {
       hideV.innerHTML = `<span class="mdi mdi-camera"></span>`
       hideV.classList.remove("off");
       hideV.classList.add("on");
       let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${myPeerId}"]`);
       hideVimg.style.display = 'none'
+      socket.emit("camera-turn-on", roomId, myPeerId);
     }
   });
 
+  socket.on("camera-turn-offed", (roomId, userPeerId) => {
+    let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${userPeerId}"]`);
+    hideVimg.style.display = 'block'
+  });
+  socket.on("camera-turn-oned", (roomId, userPeerId) => {
+    let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${userPeerId}"]`);
+    hideVimg.style.display = 'none'
+  };
 startScreenShareBtn.addEventListener("click", () => {
   if (isScreenSharing) return;
 
