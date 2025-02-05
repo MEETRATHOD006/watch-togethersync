@@ -175,9 +175,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send-photo", ({ roomId, sender, photoUrl, senderId, message }) => {
-    // Simply broadcast the photo to everyone in the room.
-    console.log("server receives photo with message:", message);
-    io.to(roomId).emit("receive-photo", { sender, photoUrl, timestamp: new Date(), senderId, message });
+    try {
+    // Save the photo message into the database
+      await pool.query(
+        "INSERT INTO messages (room_id, sender, message, photo_url) VALUES ($1, $2, $3, $4)",
+        [roomId, sender, message, photoUrl]
+      );
+      // Broadcast the photo message to the room
+      io.to(roomId).emit("receive-photo", { sender, photoUrl, timestamp: new Date(), senderId, message });
+    } catch (err) {
+      console.error("Failed to save photo message:", err.message);
+    }
   });
   
 });
