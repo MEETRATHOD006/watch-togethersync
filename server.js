@@ -176,6 +176,7 @@ io.on("connection", (socket) => {
 
   socket.on("send-photo", ({ roomId, sender, photoUrl, senderId, message }) => {
     // Simply broadcast the photo to everyone in the room.
+    console.log("server receives photo with message:", message);
     io.to(roomId).emit("receive-photo", { sender, photoUrl, timestamp: new Date(), senderId, message });
   });
   
