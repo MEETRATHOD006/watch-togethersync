@@ -121,28 +121,6 @@ if (roomId) {
       call.on('stream', userVideoStream => {
         const remoteUserId = call.peer || "unknown";
         addVideoStream(video, userVideoStream, remoteUserId);
-        // When a new user joins and there is an active screen share, this event is triggered
-        socket.on("active-screen-share", (sharedUserId) => {
-          console.log("Active screen share detected from user:", sharedUserId);
-          // You can use the same code you use for "screen-share-started"
-          const sharedVideoElement = document.querySelector(
-            `.individualsVideo[data-user-id="${sharedUserId}"] video`
-          );
-
-          console.log(sharedVideoElement);
-          if (sharedVideoElement){
-            let bigScreen = document.querySelector('#videoPlayer video')
-            bigScreen.srcObject = sharedVideoElement.srcObject;
-            bigScreen.play();
-            startScreenShareBtn.disabled = true;
-            stopScreenShareBtn.disabled = true;
-            console.log(sharedVideoElement.srcObject)
-          } else {
-            console.log("dfgfdgdfh")
-          }
-        
-          
-        });
       })
     })
     
@@ -150,6 +128,9 @@ if (roomId) {
     socket.on("user-connected", userId => {
       if (userId !== myPeerId) {  // Check if the userId is not the same as the current user's ID
         connectToNewUser(userId, stream);
+        if (isScreenSharing && currentScreenStream) {
+          socket.emit("active-screen-share", roomId, myPeerId);
+        }
       }
       displayNotification(`${userId} has joined the room.`);
     });
@@ -390,6 +371,26 @@ socket.on("screen-share-stopped", (sharerUserId) => {
   videoContainer.innerHTML = ""; // Clear the screen share
   startScreenShareBtn.disabled = false;
   stopScreenShareBtn.disabled = true;
+});
+
+// When a new user joins and there is an active screen share, this event is triggered
+socket.on("active-screen-shared", (sharedUserId) => {
+  console.log("Active screen share detected from user:", sharedUserId);
+  // You can use the same code you use for "screen-share-started"
+  const sharedVideoElement = document.querySelector(
+  `.individualsVideo[data-user-id="${sharedUserId}"] video`
+  );
+  console.log(sharedVideoElement);
+  if (sharedVideoElement){
+    let bigScreen = document.querySelector('#videoPlayer video')
+    bigScreen.srcObject = sharedVideoElement.srcObject;
+    bigScreen.play();
+    startScreenShareBtn.disabled = true;
+    stopScreenShareBtn.disabled = true;
+    console.log(sharedVideoElement.srcObject)
+  } else {
+    console.log("dfgfdgdfh")
+  }
 });
 
   // *** Chat Functionality ***
