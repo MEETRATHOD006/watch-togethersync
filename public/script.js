@@ -3,9 +3,9 @@ const socket = io("https://watch-togethersync.onrender.com"); // Update the URL 
 
 const peers = {}; // Store peer connections
 let myPeerId = null;  // Store the peer ID
-let localStream; // Store the local video stream
+let localStream = null; // Store the local video stream
 let isScreenSharing = false; // Flag to check screen sharing status
-let currentScreenStream;
+let currentScreenStream = null;
 const startScreenShareBtn = document.getElementById("startScreenShare");
 const stopScreenShareBtn = document.getElementById("stopScreenShare");
 const videoCallsbtn = document.getElementById("videocalls");
@@ -111,8 +111,10 @@ if (roomId) {
 
     myPeer.on('call', call => {
       if (isScreenSharing) {
+        console.log("isScreenSharing", currentScreenStream);
         call.answer(currentScreenStream);
       } else {
+        console.log("no screen sharing", localStream, currentScreenStream);
         call.answer(localStream);
       }
       const video = document.createElement('video')
