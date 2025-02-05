@@ -128,9 +128,6 @@ if (roomId) {
     socket.on("user-connected", userId => {
       if (userId !== myPeerId) {  // Check if the userId is not the same as the current user's ID
         connectToNewUser(userId, stream);
-        if (isScreenSharing && currentScreenStream) {
-          socket.emit("active-screen-share", roomId, myPeerId);
-        }
       }
       displayNotification(`${userId} has joined the room.`);
     });
@@ -154,6 +151,9 @@ if (roomId) {
     const outgoingStream = (isScreenSharing && currentScreenStream) ? currentScreenStream : stream;
     const call = myPeer.call(userId, outgoingStream);
     const video = document.createElement('video');
+    if (isScreenSharing && currentScreenStream) {
+          socket.emit("active-screen-share", roomId, myPeerId);
+    }
     call.on("stream", userVideoStream => {
       addVideoStream(video, userVideoStream, userId);
     });
