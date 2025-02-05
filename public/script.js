@@ -81,15 +81,6 @@ if (roomId) {
   });
 
 
-  // myPeer.on("open", id => {
-  //   myPeerId = id;
-  //   console.log("befor emit join_room", myPeerId)
-  //   socket.emit("join-room", roomId, myPeerId);
-  //   console.log("after emit room_join")
-  // })
-
-  
-
   // Room-specific UI updates
   updateRoomUI(roomId);
   const myVideo = document.createElement('video');
@@ -363,10 +354,11 @@ socket.on("screen-share-stopped", (sharerUserId) => {
         .then(response => response.json())
         .then(data => {
             const sender = senderNameInput.value.trim() || "Anonymous";
-            socket.emit("send-photo", { roomId, sender, photoUrl: data.url, senderId: myPeerId });
+            const message = messageInput.value.trim() || "";
+            socket.emit("send-photo", { roomId, sender, photoUrl: data.url, senderId: myPeerId, message });
             let who = "me";
             let photoUrl = data.url;
-            appendPhotoMessage(sender, photoUrl, new Date(), who);
+            appendPhotoMessage(sender, photoUrl, new Date(), who, message);
         })
         .catch(error => console.error("Error uploading photo:", error));
     }
@@ -374,9 +366,9 @@ socket.on("screen-share-stopped", (sharerUserId) => {
 
 
   // Listen for photo messages from the server
-  socket.on("receive-photo", ({ sender, photoUrl, timestamp, senderId }) => {
+  socket.on("receive-photo", ({ sender, photoUrl, timestamp, senderId, message }) => {
     if (senderId !== myPeerId) {
-      appendPhotoMessage(sender, photoUrl, timestamp, "not me");
+      appendPhotoMessage(sender, photoUrl, timestamp, "not me", message);
     }
   });
 
@@ -465,14 +457,16 @@ function appendMessage(sender, message, timestamp, who) {
 }
 
 // Helper function to append a photo message to the chat
-function appendPhotoMessage(sender, photoUrl, timestamp, who) {
+function appendPhotoMessage(sender, photoUrl, timestamp, who, message) {
   const mDiv = document.createElement("div");
   const sName = document.createElement("div");
+  let ms = document.createElement("div");
   const img = document.createElement("img");
   const tm = document.createElement("div");
 
   mDiv.classList.add("msgs");
   sName.classList.add("sender_name");
+  ms.classList.add("ms");
   tm.classList.add("tm");
 
   sName.innerText = sender;
@@ -492,8 +486,11 @@ function appendPhotoMessage(sender, photoUrl, timestamp, who) {
 
   mDiv.appendChild(sName);
   mDiv.appendChild(img);
+  mDiv.appendChild(ms);
   mDiv.appendChild(tm);
   mainChatDiv.appendChild(mDiv);
+  mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
+  mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
   mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
 }
 
