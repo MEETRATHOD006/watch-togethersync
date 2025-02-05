@@ -203,7 +203,7 @@ if (roomId) {
       const blankProfilePic = document.createElement('img');
       blankProfilePic.classList.add("blankProfilePic");
       blankProfilePic.src = "/blank-profile-picture.webp"
-      blankProfilePic .setAttribute("data-user-id", myPeerId);
+      blankProfilePic .setAttribute("data-user-id", userId);
       individualsVideo.append(blankProfilePic)
     }
   }
@@ -226,13 +226,13 @@ if (roomId) {
       hideV.innerHTML = `<span class="mdi mdi-camera-off"></span>`
       hideV.classList.remove("on");
       hideV.classList.add("off");
-      let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id]="${myPeerId}"`);
+      let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${myPeerId}"]`);
       hideVimg.style.display = 'block'
     } else {
       hideV.innerHTML = `<span class="mdi mdi-camera"></span>`
       hideV.classList.remove("off");
       hideV.classList.add("on");
-      let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id]="${myPeerId}"`);
+      let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${myPeerId}"]`);
       hideVimg.style.display = 'none'
     }
   });
