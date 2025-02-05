@@ -162,6 +162,11 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("screen-share-stopped", sharedUserId);
   });
 
+  socket.on("active-screen-share", (roomId, myPeerId) => {
+    let sharedUserId = myPeerId;
+    io.to(roomId).emit("active-screen-shared", roomId, sharedUserId);
+  })
+
   socket.on("mute-user", (roomId, myPeerId) => {
     let userPeerId = myPeerId;
     io.to(roomId).emit("user-muted", roomId, userPeerId);
