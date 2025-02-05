@@ -110,7 +110,7 @@ if (roomId) {
   
 
     myPeer.on('call', call => {
-      if (isScreenSharing && currentScreenStream) {
+      if (isScreenSharing) {
         call.answer(currentScreenStream);
       } else {
         call.answer(localStream);
@@ -282,6 +282,7 @@ startScreenShareBtn.addEventListener("click", () => {
     .then((screenStream) => {
       isScreenSharing = true;
       currentScreenStream = screenStream;
+      console.log(currentScreenStream);
       const screenTrack = screenStream.getVideoTracks()[0];
 
       // Replace video track in all existing connections
