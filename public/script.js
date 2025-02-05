@@ -214,18 +214,38 @@ if (roomId) {
       muteMe.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`
       muteMe.classList.remove("on");
       muteMe.classList.add("off");
+
+      socket.emit("mute-user", roomId, myPeerId);
     } else {
       muteMe.innerHTML = `<i class="fa-solid fa-volume-high"></i>`
       muteMe.classList.remove("off");
       muteMe.classList.add("on");
+      
+      socket.emit("unmute-user", roomId, myPeerId);
     }
   });
+
+  socket.on("user-muted", (roomId, userPeerId) => {
+    if (userPeerId !== myPeerId) {
+      let muteV = document.querySelector(`.individualsVideo[data-user-id="${userPeerId}"] video`);
+      muteV.muted = true;
+    }
+  });
+
+  socket.on("user-unmuted", (roomId, userPeerId) => {
+    if (userPeerId !== myPeerId) {
+      let muteV = document.querySelector(`.individualsVideo[data-user-id="${userPeerId}"] video`);
+      muteV.muted false;
+    }
+  });
+  
   hideV.addEventListener("click", () => {
     console.log("hideV clicked");
     if (hideV.className === "on"){
       hideV.innerHTML = `<span class="mdi mdi-camera-off"></span>`
       hideV.classList.remove("on");
       hideV.classList.add("off");
+      
       let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${myPeerId}"]`);
       hideVimg.style.display = 'block'
       socket.emit("camera-turn-off", roomId, myPeerId);
@@ -233,6 +253,7 @@ if (roomId) {
       hideV.innerHTML = `<span class="mdi mdi-camera"></span>`
       hideV.classList.remove("off");
       hideV.classList.add("on");
+      
       let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${myPeerId}"]`);
       hideVimg.style.display = 'none'
       socket.emit("camera-turn-on", roomId, myPeerId);
@@ -243,10 +264,12 @@ if (roomId) {
     let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${userPeerId}"]`);
     hideVimg.style.display = 'block'
   });
+  
   socket.on("camera-turn-oned", (roomId, userPeerId) => {
     let hideVimg = document.querySelector(`.individualsVideo .blankProfilePic[data-user-id="${userPeerId}"]`);
     hideVimg.style.display = 'none'
   });
+  
 startScreenShareBtn.addEventListener("click", () => {
   if (isScreenSharing) return;
 
