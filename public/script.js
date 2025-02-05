@@ -17,6 +17,8 @@ const messageInput = document.getElementById("message");
 const sendBtn = document.getElementById("sendbtn");
 const photoInput = document.getElementById("photoInput");
 const sendPhotoBtn = document.getElementById("sendPhotoBtn");
+const muteMe = document.getElementById("mute");
+const hideV = document.getElementById("hideV");
 
 videoCallsbtn.addEventListener("click", () => {
   console.log("videoCall clicked");
@@ -198,6 +200,31 @@ if (roomId) {
       individualsVideo.append(video);
     }
   }
+
+  muteMe.addEventListener("click", () => {
+    if (muteMe.className === "on"){
+      muteMe.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`
+      muteMe.classList.remove("on");
+      muteMe.classList.add("off");
+    }
+    if (muteMe.className === "off"){
+      muteMe.innerHTML = `<i class="fa-solid fa-volume-high"></i>`
+      muteMe.classList.remove("off");
+      muteMe.classList.add("on");
+    }
+  });
+  hideV.addEventListener("click", () => {
+    if (hideV.className === "on"){
+      hideV.innerHTML = `<i class="fa-solid fa-camera-slash"></i>`
+      hideV.classList.remove("on");
+      hideV.classList.add("off");
+    }
+    if (hideV.className === "off"){
+      hideV.innerHTML = `<i class="fa-solid fa-camera"></i>`
+      hideV.classList.remove("off");
+      hideV.classList.add("on");
+    }
+  });
 
 startScreenShareBtn.addEventListener("click", () => {
   if (isScreenSharing) return;
