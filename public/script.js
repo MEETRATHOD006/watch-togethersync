@@ -111,11 +111,11 @@ if (roomId) {
 
     myPeer.on('call', call => {
       if (isScreenSharing) {
-        console.log("isScreenSharing", currentScreenStream);
+        console.log("isScreenSharing👍", currentScreenStream);
         call.answer(currentScreenStream);
       } else {
         console.log("no screen sharing", localStream, currentScreenStream);
-        call.answer(localStream);
+        call.answer(stream);
       }
       const video = document.createElement('video')
       call.on('stream', userVideoStream => {
