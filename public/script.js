@@ -19,6 +19,8 @@ const photoInput = document.getElementById("photoInput");
 const sendPhotoBtn = document.getElementById("sendPhotoBtn");
 const muteMe = document.getElementById("mute");
 const hideV = document.getElementById("hideV");
+console.log(muteMe)
+console.log(hideV)
 
 videoCallsbtn.addEventListener("click", () => {
   console.log("videoCall clicked");
@@ -202,6 +204,7 @@ if (roomId) {
   }
 
   muteMe.addEventListener("click", () => {
+    console.log("mute clicked");
     if (muteMe.className === "on"){
       muteMe.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`
       muteMe.classList.remove("on");
@@ -214,6 +217,7 @@ if (roomId) {
     }
   });
   hideV.addEventListener("click", () => {
+    console.log("hideV clicked");
     if (hideV.className === "on"){
       hideV.innerHTML = `<i class="fa-solid fa-camera-slash"></i>`
       hideV.classList.remove("on");
