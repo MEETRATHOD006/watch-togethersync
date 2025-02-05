@@ -354,7 +354,7 @@ socket.on("screen-share-stopped", (sharerUserId) => {
         .then(response => response.json())
         .then(data => {
             const sender = senderNameInput.value.trim() || "Anonymous";
-            const message = messageInput.value.trim() || "";
+            const message = messageInput.value.trim();
             socket.emit("send-photo", { roomId, sender, photoUrl: data.url, senderId: myPeerId, message });
             let who = "me";
             let photoUrl = data.url;
