@@ -376,20 +376,26 @@ socket.on("screen-share-stopped", (sharerUserId) => {
 // When a new user joins and there is an active screen share, this event is triggered
 socket.on("active-screen-shared", (roomId, sharedUserId) => {
   console.log("Active screen share detected from user:", sharedUserId);
-  // You can use the same code you use for "screen-share-started"
-  const sharedVideoElement = document.querySelector(`.individualsVideo[data-user-id="${sharedUserId}"] video`);
-  console.log(sharedVideoElement);
-  if (sharedVideoElement){
-    let bigScreen = document.querySelector('#videoPlayer video')
-    bigScreen.srcObject = sharedVideoElement.srcObject;
-    bigScreen.play();
-    startScreenShareBtn.disabled = true;
-    stopScreenShareBtn.disabled = true;
-    console.log(sharedVideoElement.srcObject)
-  } else {
-    console.log("dfgfdgdfh")
+  
+  // Function that checks for the shared video element until it is available.
+  function waitForVideoElement() {
+    const sharedVideoElement = document.querySelector(`.individualsVideo[data-user-id="${sharedUserId}"] video`);
+    if (sharedVideoElement) {
+      let bigScreen = document.querySelector('#videoPlayer video');
+      bigScreen.srcObject = sharedVideoElement.srcObject;
+      bigScreen.play();
+      startScreenShareBtn.disabled = true;
+      stopScreenShareBtn.disabled = true;
+      console.log("Big screen updated with shared video:", sharedVideoElement.srcObject);
+    } else {
+      // If the element is not yet available, try again in 100ms
+      setTimeout(waitForVideoElement, 100);
+    }
   }
+  
+  waitForVideoElement();
 });
+
 
   // *** Chat Functionality ***
 
