@@ -377,9 +377,7 @@ socket.on("screen-share-stopped", (sharerUserId) => {
 socket.on("active-screen-shared", (roomId, sharedUserId) => {
   console.log("Active screen share detected from user:", sharedUserId);
   // You can use the same code you use for "screen-share-started"
-  const sharedVideoElement = document.querySelector(
-  `.individualsVideo[data-user-id="${sharedUserId}"] video`
-  );
+  const sharedVideoElement = document.querySelector(`.individualsVideo[data-user-id="${sharedUserId}"] video`);
   console.log(sharedVideoElement);
   if (sharedVideoElement){
     let bigScreen = document.querySelector('#videoPlayer video')
