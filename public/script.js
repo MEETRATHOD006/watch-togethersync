@@ -309,23 +309,20 @@ stopScreenShareBtn.addEventListener("click", stopScreenShare);
   
 function stopScreenShare() {
   if (!isScreenSharing) return;
-
-  // Ensure localStream is available
+  
   if (!localStream) {
     console.error("Local stream is not available.");
     return;
   }
   
-  // Retrieve the original video track from localStream
   const videoTrack = localStream.getVideoTracks()[0];
   if (!videoTrack) {
     console.error("No video track found on localStream.");
     return;
   }
-
+  
   // Replace the current (screen-sharing) track with the original video track
   for (const connId in myPeer.connections) {
-    // For each connection, find the sender responsible for video
     const sender = myPeer.connections[connId][0].peerConnection
       .getSenders()
       .find((s) => s.track && s.track.kind === "video");
@@ -333,21 +330,20 @@ function stopScreenShare() {
       sender.replaceTrack(videoTrack);
     }
   }
-
-  // Clear the screen share display area (assuming #videoPlayer shows the screen share)
+  
   const videoElement = document.getElementById("videoPlayer");
   if (videoElement) {
     videoElement.innerHTML = "";
   }
-
-  // Notify others that screen sharing has stopped
+  
   socket.emit("screen-share-stop", roomId, myPeer.id);
-
-  // Update state and UI buttons
+  
   isScreenSharing = false;
+  screenStream = null; // Clear the screen share stream
   startScreenShareBtn.disabled = false;
   stopScreenShareBtn.disabled = true;
 }
+
   
 // When someone starts screen sharing
 socket.on("screen-share-started", (sharedUserId) => {
